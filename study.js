@@ -304,11 +304,20 @@ function openDayModal(key) {
 
 function renderDayPhotos(entry) {
   dayPhotosEl.innerHTML = '';
-  (entry.photos || []).forEach((p, i) => {
+  const photos = entry.photos || [];
+  photos.forEach((p, i) => {
     const item = document.createElement('div');
     item.className = 'day-photo-item';
-    item.innerHTML = `<img src="${p.url}" alt=""><button class="day-photo-del" data-idx="${i}">✕</button>`;
-    item.querySelector('.day-photo-del').addEventListener('click', async () => {
+    item.innerHTML = `<img src="${p.url}" alt="" class="day-photo-thumb"><button class="day-photo-del" data-idx="${i}">✕</button>`;
+
+    // 사진 클릭 → 라이트박스
+    item.querySelector('.day-photo-thumb').addEventListener('click', e => {
+      e.stopPropagation();
+      openPhotoLightbox(photos, i);
+    });
+
+    item.querySelector('.day-photo-del').addEventListener('click', async e => {
+      e.stopPropagation();
       if (!confirm('사진을 삭제할까요?')) return;
       await deletePhotoFromEntry(selectedDate, i);
       renderDayPhotos(diaryCache[selectedDate] || { photos: [] });
@@ -366,6 +375,55 @@ document.getElementById('saveDayBtn').addEventListener('click', async () => {
   renderCalendar();
   toast('💾 저장 완료 🌸');
 });
+
+/* ── 사진 라이트박스 ── */
+function openPhotoLightbox(photos, startIndex) {
+  document.getElementById('photoLightbox')?.remove();
+
+  const lb = document.createElement('div');
+  lb.id = 'photoLightbox';
+  lb.className = 'photo-lightbox';
+  lb.innerHTML = `
+    <button class="lb-close" id="lbClose">✕</button>
+    <button class="lb-nav lb-prev" id="lbPrev">‹</button>
+    <div class="lb-img-wrap">
+      <img class="lb-img" id="lbImg" src="${photos[startIndex].url}" alt="">
+    </div>
+    <button class="lb-nav lb-next" id="lbNext">›</button>
+    <p class="lb-counter" id="lbCounter">${startIndex + 1} / ${photos.length}</p>`;
+
+  document.body.appendChild(lb);
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => lb.classList.add('open'));
+
+  let idx = startIndex;
+
+  const update = () => {
+    document.getElementById('lbImg').src = photos[idx].url;
+    document.getElementById('lbCounter').textContent = `${idx + 1} / ${photos.length}`;
+  };
+
+  document.getElementById('lbClose').addEventListener('click', () => {
+    lb.remove(); document.body.style.overflow = '';
+  });
+  lb.addEventListener('click', e => {
+    if (e.target === lb) { lb.remove(); document.body.style.overflow = ''; }
+  });
+  document.getElementById('lbPrev').addEventListener('click', () => {
+    idx = (idx - 1 + photos.length) % photos.length; update();
+  });
+  document.getElementById('lbNext').addEventListener('click', () => {
+    idx = (idx + 1) % photos.length; update();
+  });
+
+  // 키보드 이동
+  const keyHandler = e => {
+    if (e.key === 'ArrowLeft')  { idx = (idx - 1 + photos.length) % photos.length; update(); }
+    if (e.key === 'ArrowRight') { idx = (idx + 1) % photos.length; update(); }
+    if (e.key === 'Escape')     { lb.remove(); document.body.style.overflow = ''; document.removeEventListener('keydown', keyHandler); }
+  };
+  document.addEventListener('keydown', keyHandler);
+}
 
 /* ── 달 이동 ── */
 document.getElementById('prevMonth').addEventListener('click', () => {

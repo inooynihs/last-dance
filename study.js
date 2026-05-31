@@ -2,11 +2,11 @@
  * study.js — 유니의 마지막 도전 🌸
  */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc }
-  from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject }
-  from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const firebaseApp = initializeApp({
   apiKey: "AIzaSyCoGIQVNaIrRRBUM1wzy3A74UGp59jQOQU",
@@ -26,7 +26,7 @@ const COLLECTION     = 'study_diary';
 
 /* ── 달력 범위: 2026.05.31 ~ 2026.11.20 ── */
 const START = { year: 2026, month: 4, day: 31 }; // month 0-indexed
-const END   = { year: 2026, month: 10, day: 19 };
+const END   = { year: 2026, month: 10, day: 20 };
 
 /* ── 특별한 날 ── */
 const SPECIAL_DAYS = {
@@ -47,7 +47,7 @@ const QUOTES = [
   { text: "꿈을 향해 나아가라, 두려움이 없는 사람처럼.", author: "마크 트웨인" },
   { text: "당신의 시간은 한정되어 있다. 다른 사람의 삶을 살면서 낭비하지 마라.", author: "스티브 잡스" },
   { text: "인생을 건 시험에 투머치는 없다.", author: "이원준T" },
-  { text: "유니, 넌 할 수 있어! 💕", author: "응원단" },
+  { text: "유니, 넌 할 수 있어! 🌸", author: "응원단" },
 ];
 
 /* ── 상태 ── */
@@ -400,12 +400,12 @@ function initLightbox() {
     <p class="lb-counter" id="lbCounter"></p>`;
   document.body.appendChild(lbEl);
 
-  lbEl.querySelector('#lbClose').addEventListener('click', lbClose);
-  lbEl.addEventListener('click', e => { if (e.target === lbEl) lbClose(); });
-  lbEl.querySelector('#lbPrev').addEventListener('click', () => {
+  document.getElementById('lbClose').addEventListener('click', lbClose);
+  lbEl.addEventListener('click', function(e) { if (e.target === lbEl) lbClose(); });
+  document.getElementById('lbPrev').addEventListener('click', function() {
     lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; lbUpdate();
   });
-  lbEl.querySelector('#lbNext').addEventListener('click', () => {
+  document.getElementById('lbNext').addEventListener('click', function() {
     lbIdx = (lbIdx + 1) % lbPhotos.length; lbUpdate();
   });
   document.addEventListener('keydown', e => {
@@ -417,8 +417,8 @@ function initLightbox() {
 }
 
 function lbUpdate() {
-  lbEl.querySelector('#lbImg').src = lbPhotos[lbIdx].url;
-  lbEl.querySelector('#lbCounter').textContent = `${lbIdx + 1} / ${lbPhotos.length}`;
+  document.getElementById('lbImg').src = lbPhotos[lbIdx].url;
+  document.getElementById('lbCounter').textContent = (lbIdx + 1) + ' / ' + lbPhotos.length;
 }
 
 function lbClose() {

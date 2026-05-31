@@ -11,78 +11,41 @@
 </head>
 <body>
 
-  <!-- 배경 장식 -->
+  <!-- 배경 이모티콘 장식 -->
   <div class="bg-deco">
-    <span class="bg-star s1">✦</span>
-    <span class="bg-star s2">✿</span>
-    <span class="bg-star s3">✦</span>
-    <span class="bg-star s4">❀</span>
-    <span class="bg-star s5">✦</span>
-    <span class="bg-star s6">✿</span>
+    <span class="bg-emo e1">🌸</span>
+    <span class="bg-emo e2">✨</span>
+    <span class="bg-emo e3">🎀</span>
+    <span class="bg-emo e4">🌷</span>
+    <span class="bg-emo e5">⭐</span>
+    <span class="bg-emo e6">🍭</span>
+    <span class="bg-emo e7">🌸</span>
+    <span class="bg-emo e8">💕</span>
+    <span class="bg-emo e9">✨</span>
+    <span class="bg-emo e10">🎀</span>
+    <span class="bg-emo e11">🌷</span>
+    <span class="bg-emo e12">⭐</span>
   </div>
 
   <!-- 헤더 -->
+  <!-- 상단 스티커 띠 -->
+  <div class="sticker-strip">
+    <span>🌸</span><span>✨</span><span>📚</span><span>🎀</span>
+    <span>🌷</span><span>⭐</span><span>🍀</span><span>💕</span>
+    <span>🌸</span><span>✨</span><span>📚</span><span>🎀</span>
+    <span>🌷</span><span>⭐</span><span>🍀</span><span>💕</span>
+    <span>🌸</span><span>✨</span><span>📚</span><span>🎀</span>
+    <span>🌷</span><span>⭐</span><span>🍀</span><span>💕</span>
+  </div>
+
   <header class="site-header">
     <div class="header-inner">
 
       <!-- 왼쪽: 고양이 + 타이틀 -->
       <div class="header-left">
-        <!-- SVG 치비 캐릭터 (핑크 머리, 큰 눈, 리본, 꽃) -->
+        <!-- 캐릭터 이미지 -->
         <div class="cat-wrap">
-          <svg class="cat-svg" viewBox="0 0 110 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- 몸통 (흰 자켓) -->
-            <ellipse cx="55" cy="125" rx="30" ry="22" fill="white" stroke="#e0e0e0" stroke-width="1.5"/>
-            <!-- 스커트 (빨간) -->
-            <path d="M30 135 Q55 148 80 135 L78 150 Q55 155 32 150 Z" fill="#e53935"/>
-            <!-- 팔 왼쪽 -->
-            <ellipse cx="24" cy="118" rx="8" ry="14" fill="white" stroke="#e0e0e0" stroke-width="1.2" transform="rotate(-15 24 118)"/>
-            <!-- 팔 오른쪽 -->
-            <ellipse cx="86" cy="118" rx="8" ry="14" fill="white" stroke="#e0e0e0" stroke-width="1.2" transform="rotate(15 86 118)"/>
-            <!-- 목 -->
-            <rect x="48" y="92" width="14" height="12" rx="4" fill="#ffe0b2"/>
-            <!-- 얼굴 -->
-            <ellipse cx="55" cy="72" rx="32" ry="30" fill="#ffe0b2" stroke="#ffb3d1" stroke-width="1.5"/>
-            <!-- 핑크 머리 (큰 모자처럼) -->
-            <ellipse cx="55" cy="52" rx="36" ry="28" fill="#f48fb1"/>
-            <!-- 머리 앞머리 -->
-            <path d="M22 58 Q30 44 44 50 Q50 42 55 48 Q60 42 66 50 Q80 44 88 58" fill="#f48fb1" stroke="#f48fb1" stroke-width="1"/>
-            <!-- 흰 리본 (왼쪽 큰 리본) -->
-            <path d="M14 45 Q24 38 28 48 Q24 52 14 45Z" fill="white" stroke="#e0e0e0" stroke-width="1"/>
-            <path d="M14 45 Q18 55 28 52 Q24 52 14 45Z" fill="white" stroke="#e0e0e0" stroke-width="1"/>
-            <circle cx="22" cy="48" r="4" fill="white" stroke="#e0e0e0" stroke-width="1"/>
-            <!-- 꽃 장식 (오른쪽) -->
-            <circle cx="80" cy="36" r="8" fill="white" stroke="#ffb3d1" stroke-width="1.5"/>
-            <circle cx="74" cy="31" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
-            <circle cx="86" cy="31" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
-            <circle cx="74" cy="41" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
-            <circle cx="86" cy="41" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
-            <circle cx="80" cy="36" r="4" fill="#fff9c4"/>
-            <!-- 눈 (크고 동글동글) -->
-            <circle cx="43" cy="68" r="10" fill="white"/>
-            <circle cx="43" cy="68" r="8" fill="#1a1a2e"/>
-            <circle cx="46" cy="65" r="3" fill="white"/>
-            <circle cx="43" cy="73" r="1.5" fill="white" opacity="0.6"/>
-            <circle cx="67" cy="68" r="10" fill="white"/>
-            <circle cx="67" cy="68" r="8" fill="#1a1a2e"/>
-            <circle cx="70" cy="65" r="3" fill="white"/>
-            <circle cx="67" cy="73" r="1.5" fill="white" opacity="0.6"/>
-            <!-- 속눈썹 -->
-            <path d="M34 61 Q35 58 37 60" stroke="#1a1a2e" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-            <path d="M52 61 Q51 58 49 60" stroke="#1a1a2e" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-            <!-- 볼 (핑크) -->
-            <ellipse cx="32" cy="76" rx="9" ry="6" fill="#f48fb1" opacity="0.45"/>
-            <ellipse cx="78" cy="76" rx="9" ry="6" fill="#f48fb1" opacity="0.45"/>
-            <!-- 코 -->
-            <path d="M52 77 Q55 80 58 77" stroke="#e91e63" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-            <!-- 입 -->
-            <path d="M48 83 Q55 90 62 83" stroke="#c2185b" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-            <!-- 옷 단추 -->
-            <circle cx="55" cy="108" r="2.5" fill="#ffb3d1"/>
-            <circle cx="55" cy="116" r="2.5" fill="#ffb3d1"/>
-            <!-- 발 (빨간 부츠) -->
-            <ellipse cx="43" cy="148" rx="10" ry="6" fill="#e53935" stroke="#c62828" stroke-width="1"/>
-            <ellipse cx="67" cy="148" rx="10" ry="6" fill="#e53935" stroke="#c62828" stroke-width="1"/>
-          </svg>
+          <img class="cat-img" src="https://firebasestorage.googleapis.com/v0/b/yuni-archive.firebasestorage.app/o/common.jpeg?alt=media&token=09f18d13-03db-40c8-9d41-6c59277375ff" alt="캐릭터" id="charImage">
         </div>
 
         <div class="header-title-wrap">

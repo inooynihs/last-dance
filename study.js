@@ -228,7 +228,7 @@ async function renderCalendar() {
   grid.innerHTML = '';
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  let endDay = (currentYear === 2026 && currentMonth === 10) ? 20 : daysInMonth;
+  let endDay = (currentYear === 2026 && currentMonth === 10) ? 19 : daysInMonth;
 
   // 6월: 5/31 칸을 달력 맨 앞에 삽입
   if (currentYear === 2026 && currentMonth === 5) {

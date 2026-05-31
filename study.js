@@ -384,51 +384,56 @@ document.getElementById('saveDayBtn').addEventListener('click', async () => {
   toast('💾 저장 완료 🌸');
 });
 
-/* ── 사진 라이트박스 (전역 싱글턴) ── */
+/* ── 사진 라이트박스 ── */
 let lbPhotos = [], lbIdx = 0;
+let lbEl = null;
 
-// HTML에 라이트박스 미리 삽입
-const lbEl = document.createElement('div');
-lbEl.id = 'photoLightbox';
-lbEl.className = 'photo-lightbox';
-lbEl.innerHTML = `
-  <button class="lb-close" id="lbClose">✕</button>
-  <button class="lb-nav lb-prev" id="lbPrev">‹</button>
-  <div class="lb-img-wrap"><img class="lb-img" id="lbImg" src="" alt=""></div>
-  <button class="lb-nav lb-next" id="lbNext">›</button>
-  <p class="lb-counter" id="lbCounter"></p>`;
-document.body.appendChild(lbEl);
+function initLightbox() {
+  lbEl = document.createElement('div');
+  lbEl.id = 'photoLightbox';
+  lbEl.className = 'photo-lightbox';
+  lbEl.innerHTML = `
+    <button class="lb-close" id="lbClose">✕</button>
+    <button class="lb-nav lb-prev" id="lbPrev">‹</button>
+    <div class="lb-img-wrap"><img class="lb-img" id="lbImg" src="" alt=""></div>
+    <button class="lb-nav lb-next" id="lbNext">›</button>
+    <p class="lb-counter" id="lbCounter"></p>`;
+  document.body.appendChild(lbEl);
+
+  lbEl.querySelector('#lbClose').addEventListener('click', lbClose);
+  lbEl.addEventListener('click', e => { if (e.target === lbEl) lbClose(); });
+  lbEl.querySelector('#lbPrev').addEventListener('click', () => {
+    lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; lbUpdate();
+  });
+  lbEl.querySelector('#lbNext').addEventListener('click', () => {
+    lbIdx = (lbIdx + 1) % lbPhotos.length; lbUpdate();
+  });
+  document.addEventListener('keydown', e => {
+    if (!lbEl?.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; lbUpdate(); }
+    if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbPhotos.length; lbUpdate(); }
+    if (e.key === 'Escape')     lbClose();
+  });
+}
 
 function lbUpdate() {
-  document.getElementById('lbImg').src = lbPhotos[lbIdx].url;
-  document.getElementById('lbCounter').textContent = `${lbIdx + 1} / ${lbPhotos.length}`;
+  lbEl.querySelector('#lbImg').src = lbPhotos[lbIdx].url;
+  lbEl.querySelector('#lbCounter').textContent = `${lbIdx + 1} / ${lbPhotos.length}`;
 }
+
 function lbClose() {
-  lbEl.classList.remove('open');
+  lbEl?.classList.remove('open');
   document.body.style.overflow = '';
 }
+
 function openPhotoLightbox(photos, startIndex) {
+  if (!lbEl) initLightbox();
   lbPhotos = photos;
   lbIdx    = startIndex;
   lbUpdate();
   lbEl.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
-document.getElementById('lbClose').addEventListener('click', lbClose);
-lbEl.addEventListener('click', e => { if (e.target === lbEl) lbClose(); });
-document.getElementById('lbPrev').addEventListener('click', () => {
-  lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; lbUpdate();
-});
-document.getElementById('lbNext').addEventListener('click', () => {
-  lbIdx = (lbIdx + 1) % lbPhotos.length; lbUpdate();
-});
-document.addEventListener('keydown', e => {
-  if (!lbEl.classList.contains('open')) return;
-  if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; lbUpdate(); }
-  if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbPhotos.length; lbUpdate(); }
-  if (e.key === 'Escape')     lbClose();
-});
 
 /* ── 달 이동 ── */
 document.getElementById('prevMonth').addEventListener('click', () => {

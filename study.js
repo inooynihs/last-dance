@@ -308,15 +308,21 @@ function renderDayPhotos(entry) {
   photos.forEach((p, i) => {
     const item = document.createElement('div');
     item.className = 'day-photo-item';
-    item.innerHTML = `<img src="${p.url}" alt="" class="day-photo-thumb"><button class="day-photo-del" data-idx="${i}">✕</button>`;
 
-    // 사진 클릭 → 라이트박스
-    item.querySelector('.day-photo-thumb').addEventListener('click', e => {
+    const img = document.createElement('img');
+    img.src = p.url;
+    img.alt = '';
+    img.className = 'day-photo-thumb';
+    img.addEventListener('click', e => {
       e.stopPropagation();
       openPhotoLightbox(photos, i);
     });
+    item.appendChild(img);
 
-    item.querySelector('.day-photo-del').addEventListener('click', async e => {
+    const delBtn = document.createElement('button');
+    delBtn.className = 'day-photo-del';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', async e => {
       e.stopPropagation();
       if (!confirm('사진을 삭제할까요?')) return;
       await deletePhotoFromEntry(selectedDate, i);
@@ -324,6 +330,8 @@ function renderDayPhotos(entry) {
       renderCalendar();
       toast('🗑️ 사진 삭제 완료');
     });
+    item.appendChild(delBtn);
+
     dayPhotosEl.appendChild(item);
   });
 }

@@ -3,7 +3,7 @@
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc }
+import { getFirestore, collection, getDocs, doc, setDoc }
   from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject }
   from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
@@ -16,46 +16,71 @@ const firebaseApp = initializeApp({
   messagingSenderId: "1082487282227",
   appId: "1:1082487282227:web:a39e154e7f79a037586146"
 });
-const db = getFirestore(firebaseApp);
+const db      = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
 /* ── 설정 ── */
 const ADMIN_PASSWORD = '1234'; // ★ 비밀번호 변경 가능
-const SUNEUNG_DATE   = new Date('2026-11-19T00:00:00');
+const SUNEUNG        = new Date('2026-11-19T00:00:00');
 const COLLECTION     = 'study_diary';
 
-/* ── 특별한 날 목록 ── */
+/* ── 달력 범위: 2026.05.31 ~ 2026.11.20 ── */
+const START = { year: 2026, month: 4, day: 31 }; // month 0-indexed
+const END   = { year: 2026, month: 10, day: 20 };
+
+/* ── 특별한 날 ── */
 const SPECIAL_DAYS = {
-  '2026-06-19': '🎯 중강',
+  '2026-06-19': '🎓 종강',
   '2026-09-17': '🎂 유니 생일',
-  '2026-11-19': '🌸 수능 D-DAY',
+  '2026-11-19': '🌸 수능',
 };
 
-/* ── 중간고사 기간 (6/1 ~ 6/19) ── */
-function isExamPeriod(year, month, day) {
-  if (year === 2026 && month === 5) { // month는 0-indexed, 5 = 6월
-    return day >= 1 && day <= 19;
-  }
-  return false;
-}
+/* ── 명언 목록 ── */
+const QUOTES = [
+  { text: "오늘 할 수 있는 일을 내일로 미루지 마라.", author: "벤자민 프랭클린" },
+  { text: "천 리 길도 한 걸음부터.", author: "노자" },
+  { text: "포기하지 않는 한 실패는 없다.", author: "알버트 아인슈타인" },
+  { text: "지금 이 순간이 인생에서 가장 젊은 때다.", author: "익명" },
+  { text: "고통은 일시적이지만 포기는 영원하다.", author: "랜스 암스트롱" },
+  { text: "노력은 배신하지 않는다.", author: "익명" },
+  { text: "꿈을 꾸는 자만이 그 꿈을 이룰 수 있다.", author: "익명" },
+  { text: "힘들다고 멈추면 더 힘들어진다.", author: "익명" },
+  { text: "오늘의 나는 내일의 나를 위한 선물이다.", author: "익명" },
+  { text: "작은 진전도 진전이다. 스스로를 칭찬해 줘.", author: "익명" },
+  { text: "유니, 넌 할 수 있어! 🌸", author: "응원단" },
+];
 
 /* ── 상태 ── */
 let isAdminMode  = false;
 let currentYear  = 2026;
-let currentMonth = 5; // 0-indexed: 5 = 6월
+let currentMonth = 4; // 5월 (0-indexed)
 let selectedDate = null;
 let diaryCache   = {};
+let quoteIdx     = 0;
 
-/* ── D-day ── */
-function updateDday() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const diff = Math.ceil((SUNEUNG_DATE - today) / (1000*60*60*24));
-  const el = document.getElementById('ddayNum');
-  if (diff > 0)       el.textContent = `D-${diff}`;
-  else if (diff === 0) el.textContent = 'D-DAY 🌸';
-  else                el.textContent  = `D+${Math.abs(diff)}`;
+/* ── 명언 로테이션 ── */
+function initQuotes() {
+  quoteIdx = Math.floor(Math.random() * QUOTES.length);
+  showQuote();
+  setInterval(() => {
+    const textEl   = document.getElementById('quoteText');
+    const authorEl = document.getElementById('quoteAuthor');
+    textEl.classList.add('fade-out');
+    authorEl.classList.add('fade-out');
+    setTimeout(() => {
+      quoteIdx = (quoteIdx + 1) % QUOTES.length;
+      showQuote();
+      textEl.classList.remove('fade-out');
+      authorEl.classList.remove('fade-out');
+    }, 600);
+  }, 6000);
 }
-updateDday();
+
+function showQuote() {
+  const q = QUOTES[quoteIdx];
+  document.getElementById('quoteText').textContent   = q.text;
+  document.getElementById('quoteAuthor').textContent = `— ${q.author}`;
+}
 
 /* ── 유틸 ── */
 function toast(msg) {
@@ -70,18 +95,22 @@ function dateKey(year, month, day) {
 }
 
 function formatDateLabel(key) {
-  const [y, m, d] = key.split('-');
+  const [y, m, d] = key.split('-').map(Number);
   const days = ['일','월','화','수','목','금','토'];
-  const date = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
-  return `${y}년 ${parseInt(m)}월 ${parseInt(d)}일 (${days[date.getDay()]})`;
+  const dow = new Date(y, m-1, d).getDay();
+  return `${y}년 ${m}월 ${d}일 (${days[dow]})`;
 }
 
-function getDdayForDate(key) {
-  const date = new Date(key + 'T00:00:00');
-  const diff = Math.ceil((SUNEUNG_DATE - date) / (1000*60*60*24));
-  if (diff > 0)       return `수능까지 D-${diff}`;
-  else if (diff === 0) return '수능 당일! 🌸';
-  else                return `수능 후 D+${Math.abs(diff)}`;
+/* ── 달 이동 제한 체크 ── */
+function canGoPrev() {
+  if (currentYear > 2026) return false;
+  if (currentYear === 2026 && currentMonth <= 4) return false; // 5월 이전 불가
+  return true;
+}
+function canGoNext() {
+  if (currentYear < 2026) return false;
+  if (currentYear === 2026 && currentMonth >= 10) return false; // 11월 이후 불가
+  return true;
 }
 
 /* ── Firebase ── */
@@ -98,7 +127,7 @@ async function saveDay(key, data) {
   diaryCache[key] = data;
 }
 
-async function deletePhoto(key, photoIndex) {
+async function deletePhotoFromEntry(key, photoIndex) {
   const entry = diaryCache[key]; if (!entry) return;
   const photo = entry.photos[photoIndex];
   if (photo?.path) { try { await deleteObject(ref(storage, photo.path)); } catch(_) {} }
@@ -107,80 +136,93 @@ async function deletePhoto(key, photoIndex) {
 }
 
 /* ── 업로드 ── */
-function showUpload(filename) {
+function showUpload(fn) {
   let el = document.getElementById('uploadBarModal');
   if (!el) {
     el = document.createElement('div'); el.id = 'uploadBarModal'; el.className = 'upload-bar-modal';
-    el.innerHTML = `<p style="font-size:.78rem;color:var(--text-m);font-family:'Gaegu',cursive;">📤 ${filename}</p><div class="upload-bar-track"><div class="upload-bar-fill" id="ubFill"></div></div><p class="upload-bar-pct" id="ubPct">0%</p>`;
+    el.innerHTML = `<p style="font-size:.8rem;color:var(--text-m);font-family:'Cute Font',sans-serif;">📤 ${fn}</p><div class="upload-bar-track"><div class="upload-bar-fill" id="ubFill"></div></div><p class="upload-bar-pct" id="ubPct">0%</p>`;
     document.body.appendChild(el);
   }
   el.classList.add('open');
 }
-function updateUpload(p) { const f=document.getElementById('ubFill'),t=document.getElementById('ubPct'); if(f)f.style.width=p+'%'; if(t)t.textContent=p+'%'; }
-function hideUpload() { const el=document.getElementById('uploadBarModal'); if(el){el.classList.remove('open');setTimeout(()=>el.remove(),300);} }
+function updateUpload(p) {
+  const f = document.getElementById('ubFill'), t = document.getElementById('ubPct');
+  if (f) f.style.width = p + '%'; if (t) t.textContent = p + '%';
+}
+function hideUpload() {
+  const el = document.getElementById('uploadBarModal');
+  if (el) { el.classList.remove('open'); setTimeout(() => el.remove(), 300); }
+}
 
 function uploadPhoto(file) {
   return new Promise((resolve, reject) => {
-    const uid = Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    const uid  = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     const path = `study_photos/${uid}_${file.name}`;
-    const task = uploadBytesResumable(ref(storage,path), file);
-    task.on('state_changed', s=>updateUpload(Math.round(s.bytesTransferred/s.totalBytes*100)), reject,
-      async()=>resolve({url:await getDownloadURL(task.snapshot.ref),path}));
+    const task = uploadBytesResumable(ref(storage, path), file);
+    task.on('state_changed',
+      s => updateUpload(Math.round(s.bytesTransferred / s.totalBytes * 100)),
+      reject,
+      async () => resolve({ url: await getDownloadURL(task.snapshot.ref), path })
+    );
   });
 }
 
 /* ── 달력 렌더링 ── */
-const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const MONTH_NAMES = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
 async function renderCalendar() {
-  document.getElementById('monthTitle').textContent = `${currentYear}년 ${monthNames[currentMonth]}`;
+  document.getElementById('monthTitle').textContent = `${currentYear}년 ${MONTH_NAMES[currentMonth]}`;
+
+  // 이전/다음 버튼 상태
+  document.getElementById('prevMonth').style.opacity = canGoPrev() ? '1' : '0.3';
+  document.getElementById('nextMonth').style.opacity = canGoNext() ? '1' : '0.3';
+
   await loadMonth(currentYear, currentMonth);
 
   const grid = document.getElementById('calendarGrid');
   grid.innerHTML = '';
 
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  const daysInMonth = new Date(currentYear, currentMonth+1, 0).getDate();
-  const today = new Date();
+  const today      = new Date();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  // 5월은 31일만 표시 (나머지 생략)
-  const startDay = (currentYear === 2026 && currentMonth === 4) ? 31 : 1;
+  // 이 달에서 보여줄 날짜 범위 결정
+  let startDay = 1;
+  let endDay   = daysInMonth;
 
-  // 앞 빈칸 계산
-  let emptyCount = firstDay;
+  // 5월: 31일만
   if (currentYear === 2026 && currentMonth === 4) {
-    // 5월 31일의 요일
-    emptyCount = new Date(2026, 4, 31).getDay();
+    startDay = 31; endDay = 31;
+  }
+  // 11월: 1~20일만
+  if (currentYear === 2026 && currentMonth === 10) {
+    endDay = 20;
   }
 
-  for (let i = 0; i < emptyCount; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'day-cell empty';
-    grid.appendChild(cell);
+  // 첫 날 요일 계산 (startDay 기준)
+  const firstDow = new Date(currentYear, currentMonth, startDay).getDay();
+
+  // 빈칸
+  for (let i = 0; i < firstDow; i++) {
+    const el = document.createElement('div');
+    el.className = 'day-cell empty';
+    grid.appendChild(el);
   }
 
-  const days = (currentYear === 2026 && currentMonth === 4) ? [31] : Array.from({length: daysInMonth}, (_, i) => i+1);
-
-  for (const d of days) {
-    const key = dateKey(currentYear, currentMonth, d);
-    const entry = diaryCache[key];
-    const cell = document.createElement('div');
-    const dow = new Date(currentYear, currentMonth, d).getDay();
+  // 날짜 셀
+  for (let d = startDay; d <= endDay; d++) {
+    const key     = dateKey(currentYear, currentMonth, d);
+    const entry   = diaryCache[key];
     const special = SPECIAL_DAYS[key];
+    const dow     = new Date(currentYear, currentMonth, d).getDay();
 
+    const cell = document.createElement('div');
     cell.className = 'day-cell';
     if (dow === 0) cell.classList.add('sunday');
     if (dow === 6) cell.classList.add('saturday');
-
-    // 오늘
     if (d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
       cell.classList.add('today');
     }
-    // 기록 있는 날
     if (entry && (entry.photos?.length || entry.comment)) cell.classList.add('has-content');
-    // 중간고사 기간
-    if (isExamPeriod(currentYear, currentMonth, d)) cell.classList.add('exam-period');
-    // 특별한 날
     if (special) cell.classList.add('special-day');
 
     // 날짜 숫자
@@ -208,10 +250,10 @@ async function renderCalendar() {
 
     // 코멘트 미리보기
     if (entry?.comment && !entry?.photos?.length) {
-      const preview = document.createElement('p');
-      preview.className = 'day-comment-preview';
-      preview.textContent = entry.comment;
-      cell.appendChild(preview);
+      const prev = document.createElement('p');
+      prev.className = 'day-comment-preview';
+      prev.textContent = entry.comment;
+      cell.appendChild(prev);
     }
 
     // 기록 점
@@ -221,27 +263,29 @@ async function renderCalendar() {
       cell.appendChild(dot);
     }
 
-    cell.addEventListener('click', () => openDayModal(key, d));
+    cell.addEventListener('click', () => openDayModal(key));
     grid.appendChild(cell);
   }
 }
 
 /* ── 날짜 모달 ── */
-const dayModal     = document.getElementById('dayModal');
-const dayPhotosEl  = document.getElementById('dayPhotos');
+const dayModal        = document.getElementById('dayModal');
+const dayPhotosEl     = document.getElementById('dayPhotos');
 const dayCommentText  = document.getElementById('dayCommentText');
 const dayCommentEmpty = document.getElementById('dayCommentEmpty');
-const dayEditUi    = document.getElementById('dayEditUi');
-const commentInput = document.getElementById('commentInput');
+const dayEditUi       = document.getElementById('dayEditUi');
+const commentInput    = document.getElementById('commentInput');
 
-function openDayModal(key, day) {
+function openDayModal(key) {
   selectedDate = key;
-  const entry = diaryCache[key] || { photos: [], comment: '' };
+  const entry   = diaryCache[key] || { photos: [], comment: '' };
   const special = SPECIAL_DAYS[key];
 
-  document.getElementById('dayModalDate').textContent  = formatDateLabel(key);
-  document.getElementById('dayModalDday').textContent  = getDdayForDate(key);
-  document.getElementById('dayModalSpecial').textContent = special || '';
+  document.getElementById('dayModalDate').textContent = formatDateLabel(key);
+
+  const specialEl = document.getElementById('dayModalSpecial');
+  if (special) { specialEl.textContent = special; specialEl.style.display = 'inline-block'; }
+  else          { specialEl.style.display = 'none'; }
 
   renderDayPhotos(entry);
 
@@ -269,7 +313,7 @@ function renderDayPhotos(entry) {
     item.innerHTML = `<img src="${p.url}" alt=""><button class="day-photo-del" data-idx="${i}">✕</button>`;
     item.querySelector('.day-photo-del').addEventListener('click', async () => {
       if (!confirm('사진을 삭제할까요?')) return;
-      await deletePhoto(selectedDate, i);
+      await deletePhotoFromEntry(selectedDate, i);
       renderDayPhotos(diaryCache[selectedDate] || { photos: [] });
       renderCalendar();
       toast('🗑️ 사진 삭제 완료');
@@ -278,8 +322,12 @@ function renderDayPhotos(entry) {
   });
 }
 
-document.getElementById('dayModalClose').addEventListener('click', () => { dayModal.classList.remove('open'); document.body.style.overflow = ''; });
-dayModal.addEventListener('click', e => { if (e.target === dayModal) { dayModal.classList.remove('open'); document.body.style.overflow = ''; } });
+document.getElementById('dayModalClose').addEventListener('click', () => {
+  dayModal.classList.remove('open'); document.body.style.overflow = '';
+});
+dayModal.addEventListener('click', e => {
+  if (e.target === dayModal) { dayModal.classList.remove('open'); document.body.style.overflow = ''; }
+});
 
 /* ── 사진 추가 ── */
 document.getElementById('addPhotoBtn').addEventListener('click', () => {
@@ -324,10 +372,12 @@ document.getElementById('saveDayBtn').addEventListener('click', async () => {
 
 /* ── 달 이동 ── */
 document.getElementById('prevMonth').addEventListener('click', () => {
+  if (!canGoPrev()) return;
   if (currentMonth === 0) { currentMonth = 11; currentYear--; } else currentMonth--;
   renderCalendar();
 });
 document.getElementById('nextMonth').addEventListener('click', () => {
+  if (!canGoNext()) return;
   if (currentMonth === 11) { currentMonth = 0; currentYear++; } else currentMonth++;
   renderCalendar();
 });
@@ -354,25 +404,29 @@ lockFab.addEventListener('click', () => {
   setTimeout(() => pwInput.focus(), 100);
 });
 
-document.getElementById('pwCancel').addEventListener('click', () => { pwModal.classList.remove('open'); document.body.style.overflow = ''; });
+document.getElementById('pwCancel').addEventListener('click', () => {
+  pwModal.classList.remove('open'); document.body.style.overflow = '';
+});
 document.getElementById('pwConfirm').addEventListener('click', () => {
   if (pwInput.value === ADMIN_PASSWORD) {
     pwModal.classList.remove('open'); document.body.style.overflow = '';
     setAdmin(true);
   } else {
     pwInput.value = '';
-    pwInput.placeholder = '틀렸어요 🌷 다시 입력해주세요';
+    pwInput.placeholder = '틀렸어요 🌷 다시!';
     setTimeout(() => { pwInput.placeholder = '비밀번호를 입력해주세요'; }, 1500);
   }
 });
 pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('pwConfirm').click(); });
 document.getElementById('adminExitBtn').addEventListener('click', () => setAdmin(false));
 
+/* ── ESC ── */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  if (dayModal.classList.contains('open')) { dayModal.classList.remove('open'); document.body.style.overflow = ''; }
+  if (dayModal.classList.contains('open'))  { dayModal.classList.remove('open');  document.body.style.overflow = ''; }
   else if (pwModal.classList.contains('open')) { pwModal.classList.remove('open'); document.body.style.overflow = ''; }
 });
 
 /* ── 초기화 ── */
+initQuotes();
 renderCalendar();

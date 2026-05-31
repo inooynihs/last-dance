@@ -1,196 +1,281 @@
 /* ══════════════════════════════════════
    study.css — 유니의 마지막 도전 🌸
+   폰트: Cute Font
 ══════════════════════════════════════ */
 
 :root {
-  --pink-1: #fff0f5;
-  --pink-2: #ffd6e7;
-  --pink-3: #ffb3d1;
-  --pink-4: #ff85b3;
-  --pink-5: #e8478a;
-  --rose:   #c2185b;
-  --pink-light: #fff5f8;  /* 중간고사 기간 연한 핑크 */
-  --text:   #3d1a2e;
-  --text-m: #8b4d6e;
-  --text-f: #c490ad;
-  --shadow: 0 4px 20px rgba(232,71,138,.15);
-  --shadow-lg: 0 8px 40px rgba(232,71,138,.2);
-  --radius: 20px;
-  --radius-sm: 12px;
-  --spring: cubic-bezier(.34,1.56,.64,1);
-  --ease: cubic-bezier(.4,0,.2,1);
+  --pink-1:   #fff5f8;
+  --pink-2:   #ffd6e7;
+  --pink-3:   #ffb3d1;
+  --pink-4:   #ff85b3;
+  --pink-5:   #e8478a;
+  --rose:     #c2185b;
+  --yellow:   #fff9c4;
+  --yellow-2: #ffe082;
+  --yellow-3: #ffca28;
+  --mint:     #e0f7f4;
+  --lavender: #f3e5f5;
+  --text:     #3d1a2e;
+  --text-m:   #8b4d6e;
+  --text-f:   #c490ad;
+  --shadow:   0 4px 20px rgba(232,71,138,.12);
+  --shadow-lg:0 8px 40px rgba(232,71,138,.18);
+  --radius:   22px;
+  --radius-sm:14px;
+  --spring:   cubic-bezier(.34,1.56,.64,1);
+  --ease:     cubic-bezier(.4,0,.2,1);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Cute Font', 'Noto Sans KR', sans-serif;
   background: var(--pink-1);
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* ── 배경 꽃 ── */
+/* ── 배경 별 장식 ── */
 .bg-deco { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.petal { position: absolute; font-size: 1.5rem; opacity: .2; animation: floatPetal 12s ease-in-out infinite; }
-.p1 { top: 8%;  left: 5%;  animation-delay: 0s;  font-size: 2rem; }
-.p2 { top: 15%; right: 8%; animation-delay: 2s; }
-.p3 { top: 45%; left: 2%;  animation-delay: 4s;  font-size: 1.2rem; }
-.p4 { top: 60%; right: 4%; animation-delay: 1s;  font-size: 1.8rem; }
-.p5 { bottom: 20%; left: 8%;  animation-delay: 3s; }
-.p6 { bottom: 10%; right: 10%; animation-delay: 5s; font-size: 2rem; }
-@keyframes floatPetal {
-  0%,100% { transform: translate(0,0) rotate(0deg); }
-  33% { transform: translate(8px,-12px) rotate(15deg); }
-  66% { transform: translate(-6px,8px) rotate(-10deg); }
+.bg-star {
+  position: absolute;
+  color: var(--pink-3);
+  opacity: .3;
+  animation: twinkle 4s ease-in-out infinite;
+  font-size: 1.2rem;
+}
+.s1 { top: 5%;  left: 3%;  animation-delay: 0s;   font-size: 1.6rem; }
+.s2 { top: 12%; right: 6%; animation-delay: .8s;  font-size: 1.4rem; }
+.s3 { top: 40%; left: 1%;  animation-delay: 1.6s; font-size: 1rem; }
+.s4 { top: 55%; right: 3%; animation-delay: 2.4s; font-size: 1.8rem; }
+.s5 { bottom: 25%; left: 5%;  animation-delay: 1s; font-size: 1.3rem; }
+.s6 { bottom: 12%; right: 8%; animation-delay: 3s; font-size: 1rem; }
+
+@keyframes twinkle {
+  0%,100% { transform: scale(1) rotate(0deg); opacity: .3; }
+  50%      { transform: scale(1.3) rotate(20deg); opacity: .6; }
 }
 
 /* ── 헤더 ── */
 .site-header {
   position: relative; z-index: 10;
-  background: linear-gradient(135deg, #fff0f8 0%, #ffe4f0 50%, #ffd6e7 100%);
+  background: linear-gradient(160deg, #fff0f8 0%, #ffe8f3 40%, #ffd6e7 100%);
   border-bottom: 2px solid var(--pink-2);
-  padding: 28px 24px 0;
-  box-shadow: 0 2px 20px rgba(232,71,138,.08);
+  padding: 24px 28px 0;
+  box-shadow: 0 2px 24px rgba(232,71,138,.1);
 }
 
 .header-inner {
-  max-width: 900px; margin: 0 auto;
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 20px; flex-wrap: wrap; margin-bottom: 24px;
+  max-width: 960px; margin: 0 auto;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-/* 메인 타이틀 — Jua 폰트로 크고 귀엽게 */
+/* 왼쪽: 고양이 + 타이틀 */
+.header-left {
+  display: flex; align-items: center; gap: 18px;
+}
+
+/* 고양이 SVG */
+.cat-wrap {
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 10px rgba(232,71,138,.25));
+  animation: cat-bob 3s ease-in-out infinite;
+}
+.cat-svg { width: 100px; height: 110px; }
+
+@keyframes cat-bob {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-6px) rotate(2deg); }
+}
+
 .header-title {
-  font-family: 'Jua', sans-serif;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-family: 'Cute Font', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
   color: var(--rose);
   line-height: 1.2;
-  letter-spacing: -.01em;
+  letter-spacing: .02em;
 }
 
-/* D-day */
-.dday-card {
-  background: linear-gradient(135deg, var(--pink-4), var(--rose));
+.header-title-sub {
+  font-family: 'Cute Font', sans-serif;
+  font-size: .95rem;
+  color: var(--pink-4);
+  margin-top: 4px;
+  letter-spacing: .04em;
+}
+
+/* ── 명언 카드 (D-day 자리) ── */
+.quote-card {
+  background: linear-gradient(135deg, var(--yellow) 0%, #fff8e1 100%);
+  border: 2px solid var(--yellow-2);
   border-radius: var(--radius);
-  padding: 14px 24px;
-  text-align: center; color: white;
-  box-shadow: var(--shadow); flex-shrink: 0;
-  animation: pulse-card 3s ease-in-out infinite;
+  padding: 18px 22px;
+  max-width: 280px;
+  box-shadow: 0 4px 16px rgba(255,202,40,.25);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  animation: quote-glow 4s ease-in-out infinite;
 }
-@keyframes pulse-card {
-  0%,100% { box-shadow: var(--shadow); }
-  50% { box-shadow: 0 8px 30px rgba(232,71,138,.4); }
-}
-.dday-label { font-size: .7rem; opacity: .85; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
-.dday-num { font-family: 'Jua', sans-serif; font-size: 1.8rem; line-height: 1; margin-bottom: 2px; }
-.dday-date { font-size: .68rem; opacity: .75; }
 
-/* 달 이동 */
+.quote-card::before {
+  content: '❝';
+  position: absolute;
+  top: 8px; left: 12px;
+  font-size: 2rem;
+  color: var(--yellow-3);
+  opacity: .4;
+  font-family: serif;
+  line-height: 1;
+}
+
+@keyframes quote-glow {
+  0%,100% { box-shadow: 0 4px 16px rgba(255,202,40,.25); }
+  50%      { box-shadow: 0 6px 24px rgba(255,202,40,.45); }
+}
+
+.quote-text {
+  font-family: 'Cute Font', sans-serif;
+  font-size: .95rem;
+  color: #5d4037;
+  line-height: 1.7;
+  padding-left: 8px;
+  transition: opacity .6s var(--ease);
+}
+
+.quote-author {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: .72rem;
+  color: #a1887f;
+  text-align: right;
+  margin-top: 8px;
+  transition: opacity .6s var(--ease);
+}
+
+.quote-text.fade-out, .quote-author.fade-out { opacity: 0; }
+
+/* ── 달 이동 ── */
 .month-nav {
-  max-width: 900px; margin: 0 auto;
+  max-width: 960px; margin: 0 auto;
   display: flex; align-items: center; justify-content: center;
-  gap: 20px; padding-bottom: 16px;
+  gap: 20px; padding-bottom: 18px;
 }
+
 .month-title {
-  font-family: 'Jua', sans-serif;
-  font-size: 1.3rem; color: var(--rose);
-  min-width: 160px; text-align: center;
+  font-family: 'Cute Font', sans-serif;
+  font-size: 1.4rem; color: var(--rose);
+  min-width: 170px; text-align: center;
+  letter-spacing: .02em;
 }
+
 .month-btn {
-  width: 36px; height: 36px; border-radius: 50%;
+  width: 38px; height: 38px; border-radius: 50%;
   border: 2px solid var(--pink-3); background: white;
-  color: var(--pink-5); font-size: 1.2rem; cursor: pointer;
+  color: var(--pink-5); font-size: 1.3rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all .2s var(--spring);
+  font-family: inherit;
 }
-.month-btn:hover { background: var(--pink-4); color: white; border-color: var(--pink-4); transform: scale(1.1); }
+.month-btn:hover {
+  background: var(--pink-4); color: white;
+  border-color: var(--pink-4); transform: scale(1.12);
+}
 
 /* ── 달력 ── */
 .calendar-wrap {
-  max-width: 900px; margin: 28px auto;
+  max-width: 960px; margin: 24px auto;
   padding: 0 20px 100px;
   position: relative; z-index: 5;
 }
 
 .calendar-header {
   display: grid; grid-template-columns: repeat(7, 1fr);
-  gap: 4px; margin-bottom: 6px; text-align: center;
+  gap: 5px; margin-bottom: 8px; text-align: center;
 }
 .calendar-header span {
-  font-family: 'Gaegu', cursive;
-  font-size: .85rem; color: var(--text-m);
-  font-weight: 700; padding: 6px 0;
+  font-family: 'Cute Font', sans-serif;
+  font-size: .9rem; color: var(--text-m);
+  padding: 6px 0;
 }
 .calendar-header span:first-child { color: var(--pink-5); }
-.calendar-header span:last-child  { color: #7ba7d4; }
+.calendar-header span:last-child  { color: #7baed4; }
 
 .calendar-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px;
 }
 
-/* 날짜 셀 */
+/* ── 날짜 셀 ── */
 .day-cell {
   background: white;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--pink-2);
-  padding: 8px 6px 6px;
-  min-height: 95px;
+  padding: 8px 7px 7px;
+  min-height: 92px;
   cursor: pointer;
   position: relative;
   transition: all .25s var(--ease);
   overflow: hidden;
 }
-.day-cell:hover { border-color: var(--pink-4); transform: translateY(-2px); box-shadow: var(--shadow); }
-.day-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+.day-cell:hover {
+  border-color: var(--pink-4);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.day-cell.empty {
+  background: transparent; border-color: transparent; cursor: default;
+}
 .day-cell.empty:hover { transform: none; box-shadow: none; }
 
 /* 오늘 */
-.day-cell.today { border-color: var(--pink-4); background: linear-gradient(135deg,#fff5f9,#ffe8f3); }
+.day-cell.today {
+  border-color: var(--pink-4);
+  background: linear-gradient(135deg, #fff5f9, #ffe8f3);
+}
 
 /* 기록 있는 날 */
 .day-cell.has-content { border-color: var(--pink-3); }
 
-/* 중간고사 기간 (6/1~6/19) — 연한 핑크 배경 */
-.day-cell.exam-period {
-  background: #fff0f7;
-  border-color: #ffc4dd;
-}
-.day-cell.exam-period:hover { border-color: var(--pink-4); }
-
-/* 특별한 날 (생일, 중강 등) */
+/* 특별한 날 */
 .day-cell.special-day {
-  border-color: var(--pink-4) !important;
+  border-color: var(--yellow-2) !important;
+  background: linear-gradient(135deg, #fffde7, white) !important;
 }
 
 .day-cell.sunday  .day-num { color: var(--pink-5); }
-.day-cell.saturday .day-num { color: #7ba7d4; }
+.day-cell.saturday .day-num { color: #7baed4; }
 
 .day-num {
-  font-family: 'Gaegu', cursive;
-  font-size: .88rem; font-weight: 700;
-  color: var(--text); display: block; margin-bottom: 3px;
+  font-family: 'Cute Font', sans-serif;
+  font-size: .88rem;
+  color: var(--text);
+  display: block;
+  margin-bottom: 3px;
 }
+
 .day-cell.today .day-num {
   background: var(--pink-4); color: white;
   border-radius: 50%; width: 24px; height: 24px;
   display: flex; align-items: center; justify-content: center;
-  font-size: .75rem;
+  font-size: .76rem;
 }
 
 /* 특별한 날 라벨 */
 .day-special-label {
-  font-family: 'Gaegu', cursive;
-  font-size: .65rem;
-  color: var(--rose);
-  background: var(--pink-2);
+  font-family: 'Cute Font', sans-serif;
+  font-size: .62rem;
+  color: #795548;
+  background: var(--yellow);
+  border: 1px solid var(--yellow-2);
   border-radius: 6px;
   padding: 1px 5px;
   display: inline-block;
   margin-bottom: 3px;
-  font-weight: 700;
+  line-height: 1.4;
 }
 
 .day-thumb {
@@ -200,15 +285,15 @@ body {
 }
 
 .day-comment-preview {
-  font-family: 'Gaegu', cursive;
-  font-size: .65rem; color: var(--text-m);
+  font-family: 'Cute Font', sans-serif;
+  font-size: .66rem; color: var(--text-m);
   line-height: 1.3; margin-top: 3px;
   display: -webkit-box; -webkit-line-clamp: 2;
   -webkit-box-orient: vertical; overflow: hidden;
 }
 
 .day-dot {
-  position: absolute; bottom: 6px; right: 6px;
+  position: absolute; bottom: 6px; right: 7px;
   width: 6px; height: 6px;
   border-radius: 50%; background: var(--pink-4);
 }
@@ -216,8 +301,8 @@ body {
 /* ── 모달 공통 ── */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(61,26,46,.45);
-  backdrop-filter: blur(6px);
+  background: rgba(61,26,46,.4);
+  backdrop-filter: blur(8px);
   z-index: 100;
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
@@ -248,14 +333,19 @@ body {
 /* 날짜 모달 */
 .day-modal { width: min(480px,100%); padding: 32px 28px 24px; }
 .day-modal-header { margin-bottom: 20px; }
+
 .day-modal-date {
-  font-family: 'Jua', sans-serif;
-  font-size: 1.3rem; color: var(--rose); margin-bottom: 4px;
+  font-family: 'Cute Font', sans-serif;
+  font-size: 1.35rem; color: var(--rose); margin-bottom: 6px;
 }
-.day-modal-dday { font-family: 'Gaegu', cursive; font-size: .82rem; color: var(--pink-4); }
 .day-modal-special {
-  font-family: 'Gaegu', cursive; font-size: .9rem;
-  color: var(--rose); font-weight: 700; margin-top: 4px;
+  font-family: 'Cute Font', sans-serif;
+  font-size: .9rem; color: #795548;
+  background: var(--yellow);
+  border: 1px solid var(--yellow-2);
+  border-radius: 8px;
+  padding: 3px 10px;
+  display: inline-block;
 }
 
 .day-photos {
@@ -277,31 +367,38 @@ body {
 .admin-mode .day-photo-del { display: flex; }
 
 .day-comment-text {
-  font-family: 'Gaegu', cursive; font-size: 1rem;
-  color: var(--text); line-height: 1.8; white-space: pre-wrap;
+  font-family: 'Cute Font', sans-serif;
+  font-size: 1.05rem; color: var(--text);
+  line-height: 1.9; white-space: pre-wrap;
 }
 .day-comment-empty {
   text-align: center; color: var(--text-f);
-  font-family: 'Gaegu', cursive; font-size: .95rem; padding: 16px 0;
+  font-family: 'Cute Font', sans-serif;
+  font-size: 1rem; padding: 16px 0;
 }
 
-.day-edit-ui { margin-top: 16px; border-top: 1.5px dashed var(--pink-2); padding-top: 16px; }
+.day-edit-ui {
+  margin-top: 16px;
+  border-top: 1.5px dashed var(--pink-2);
+  padding-top: 16px;
+}
 
 .add-photo-btn {
   display: flex; align-items: center; gap: 6px;
   padding: 9px 18px; border-radius: 30px;
   border: 2px solid var(--pink-3); background: var(--pink-1);
-  color: var(--pink-5); font-size: .82rem; cursor: pointer;
-  font-family: 'Noto Sans KR', sans-serif; transition: all .2s; margin-bottom: 12px;
+  color: var(--pink-5); font-size: .85rem; cursor: pointer;
+  font-family: 'Cute Font', sans-serif;
+  transition: all .2s; margin-bottom: 12px;
 }
 .add-photo-btn:hover { background: var(--pink-3); color: white; }
 
 .comment-input {
   width: 100%; padding: 12px 14px;
   border: 2px solid var(--pink-2); border-radius: var(--radius-sm);
-  font-family: 'Gaegu', cursive; font-size: 1rem;
+  font-family: 'Cute Font', sans-serif; font-size: 1rem;
   color: var(--text); resize: none; outline: none;
-  transition: border-color .2s; background: var(--pink-1); line-height: 1.7;
+  transition: border-color .2s; background: var(--pink-1); line-height: 1.8;
 }
 .comment-input:focus { border-color: var(--pink-4); }
 .comment-input::placeholder { color: var(--text-f); }
@@ -310,8 +407,8 @@ body {
   width: 100%; margin-top: 10px; padding: 11px;
   border-radius: 30px; border: none;
   background: linear-gradient(135deg, var(--pink-4), var(--rose));
-  color: white; font-size: .88rem; cursor: pointer;
-  font-family: 'Noto Sans KR', sans-serif; font-weight: 500;
+  color: white; font-size: .9rem; cursor: pointer;
+  font-family: 'Cute Font', sans-serif;
   transition: all .2s var(--spring);
   box-shadow: 0 4px 14px rgba(232,71,138,.3);
 }
@@ -321,50 +418,61 @@ body {
 .pw-modal {
   width: min(320px,95vw); padding: 36px 28px 28px;
   text-align: center;
-  background: linear-gradient(135deg,#fff5f9,white);
+  background: linear-gradient(135deg, #fff5f9, white);
   border: 2px solid var(--pink-2);
 }
-.pw-title { font-family: 'Jua', sans-serif; font-size: 1.3rem; color: var(--rose); margin-bottom: 20px; }
+.pw-title {
+  font-family: 'Cute Font', sans-serif;
+  font-size: 1.4rem; color: var(--rose); margin-bottom: 20px;
+}
 .pw-input {
-  width: 100%; padding: 11px 16px; border: 2px solid var(--pink-2);
-  border-radius: 30px; text-align: center; font-size: .95rem;
-  font-family: 'Noto Sans KR', sans-serif; color: var(--text);
-  outline: none; margin-bottom: 16px; transition: border-color .2s; background: var(--pink-1);
+  width: 100%; padding: 11px 16px;
+  border: 2px solid var(--pink-2); border-radius: 30px;
+  text-align: center; font-size: .95rem;
+  font-family: 'Cute Font', sans-serif; color: var(--text);
+  outline: none; margin-bottom: 16px;
+  transition: border-color .2s; background: var(--pink-1);
 }
 .pw-input:focus { border-color: var(--pink-4); }
 .pw-btns { display: flex; gap: 8px; justify-content: center; }
 .pw-cancel, .pw-confirm {
   padding: 9px 24px; border-radius: 30px;
-  font-size: .85rem; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all .2s;
+  font-size: .88rem; cursor: pointer;
+  font-family: 'Cute Font', sans-serif; transition: all .2s;
 }
 .pw-cancel { border: 2px solid var(--pink-2); background: white; color: var(--text-m); }
 .pw-cancel:hover { border-color: var(--pink-3); }
-.pw-confirm { border: none; background: linear-gradient(135deg,var(--pink-4),var(--rose)); color: white; box-shadow: 0 3px 10px rgba(232,71,138,.3); }
+.pw-confirm {
+  border: none;
+  background: linear-gradient(135deg, var(--pink-4), var(--rose));
+  color: white; box-shadow: 0 3px 10px rgba(232,71,138,.3);
+}
 .pw-confirm:hover { transform: translateY(-1px); }
 
 /* 관리자 툴바 */
 .admin-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: linear-gradient(135deg,var(--pink-4),var(--rose));
+  background: linear-gradient(135deg, var(--pink-4), var(--rose));
   color: white; padding: 12px 24px;
   display: none; align-items: center; justify-content: space-between;
-  z-index: 200; font-size: .85rem; font-weight: 500;
+  z-index: 200; font-family: 'Cute Font', sans-serif; font-size: .9rem;
   box-shadow: 0 -4px 20px rgba(232,71,138,.3);
 }
 .admin-bar.open { display: flex; }
 .admin-exit-btn {
   padding: 6px 18px; border-radius: 20px;
   border: 2px solid rgba(255,255,255,.6); background: transparent;
-  color: white; font-size: .8rem; cursor: pointer; transition: all .2s;
+  color: white; font-size: .85rem; cursor: pointer;
+  font-family: 'Cute Font', sans-serif; transition: all .2s;
 }
 .admin-exit-btn:hover { background: rgba(255,255,255,.2); }
 
 /* 잠금 FAB */
 .lock-fab {
   position: fixed; bottom: 24px; right: 24px;
-  width: 50px; height: 50px; border-radius: 50%;
+  width: 52px; height: 52px; border-radius: 50%;
   background: white; border: 2px solid var(--pink-3);
-  box-shadow: var(--shadow); font-size: 1.2rem; cursor: pointer;
+  box-shadow: var(--shadow); font-size: 1.3rem; cursor: pointer;
   z-index: 150; transition: all .25s var(--spring);
   display: flex; align-items: center; justify-content: center;
 }
@@ -376,14 +484,15 @@ body {
   position: fixed; bottom: 80px; left: 50%;
   transform: translateX(-50%) translateY(16px);
   background: var(--rose); color: white;
-  padding: 10px 22px; border-radius: 30px; font-size: .82rem;
+  padding: 10px 22px; border-radius: 30px;
+  font-family: 'Cute Font', sans-serif; font-size: .88rem;
   z-index: 9999; opacity: 0;
   transition: opacity .25s, transform .25s var(--spring);
   pointer-events: none; white-space: nowrap;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* 업로드 진행 */
+/* 업로드 */
 .upload-bar-modal {
   position: fixed; bottom: 80px; left: 50%;
   transform: translateX(-50%);
@@ -393,15 +502,18 @@ body {
 }
 .upload-bar-modal.open { display: block; }
 .upload-bar-track { height: 4px; background: var(--pink-2); border-radius: 2px; overflow: hidden; margin: 8px 0 4px; }
-.upload-bar-fill { height: 100%; background: linear-gradient(90deg,var(--pink-4),var(--rose)); width: 0%; transition: width .2s; border-radius: 2px; }
-.upload-bar-pct { font-size: .72rem; color: var(--text-f); text-align: right; }
+.upload-bar-fill { height: 100%; background: linear-gradient(90deg, var(--pink-4), var(--rose)); width: 0%; transition: width .2s; border-radius: 2px; }
+.upload-bar-pct { font-family: 'Cute Font', sans-serif; font-size: .75rem; color: var(--text-f); text-align: right; }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--pink-1); }
 ::-webkit-scrollbar-thumb { background: var(--pink-3); border-radius: 3px; }
 
-@media (max-width: 600px) {
-  .header-inner { flex-direction: column; }
-  .day-cell { min-height: 70px; }
+@media (max-width: 640px) {
+  .header-left { flex-direction: column; align-items: center; text-align: center; }
+  .cat-svg { width: 80px; height: 88px; }
+  .header-inner { justify-content: center; }
+  .quote-card { max-width: 100%; }
+  .day-cell { min-height: 72px; }
   .calendar-wrap { padding: 0 12px 100px; }
 }

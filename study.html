@@ -6,38 +6,88 @@
   <title>유니의 마지막 도전 🌸</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&family=Noto+Sans+KR:wght@300;400;500&family=Jua&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cute+Font&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="study.css"/>
 </head>
 <body>
 
+  <!-- 배경 장식 -->
   <div class="bg-deco">
-    <div class="petal p1">🌸</div>
-    <div class="petal p2">🌷</div>
-    <div class="petal p3">🌸</div>
-    <div class="petal p4">✿</div>
-    <div class="petal p5">🌸</div>
-    <div class="petal p6">🌷</div>
+    <span class="bg-star s1">✦</span>
+    <span class="bg-star s2">✿</span>
+    <span class="bg-star s3">✦</span>
+    <span class="bg-star s4">❀</span>
+    <span class="bg-star s5">✦</span>
+    <span class="bg-star s6">✿</span>
   </div>
 
+  <!-- 헤더 -->
   <header class="site-header">
     <div class="header-inner">
-      <div class="header-title-wrap">
-        <h1 class="header-title">유니의 마지막 도전 🌸</h1>
+
+      <!-- 왼쪽: 고양이 + 타이틀 -->
+      <div class="header-left">
+        <!-- SVG 고양이 캐릭터 -->
+        <div class="cat-wrap">
+          <svg class="cat-svg" viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 귀 -->
+            <path d="M22 38 L10 10 L38 28 Z" fill="#ffb3d1" stroke="#ff85b3" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M98 38 L110 10 L82 28 Z" fill="#ffb3d1" stroke="#ff85b3" stroke-width="1.5" stroke-linejoin="round"/>
+            <!-- 귀 안쪽 -->
+            <path d="M24 34 L16 16 L34 28 Z" fill="#ffd6e7"/>
+            <path d="M96 34 L104 16 L86 28 Z" fill="#ffd6e7"/>
+            <!-- 얼굴 -->
+            <circle cx="60" cy="72" r="46" fill="#fff0f5" stroke="#ffb3d1" stroke-width="2"/>
+            <!-- 눈 -->
+            <ellipse cx="43" cy="65" rx="7" ry="8" fill="#3d1a2e"/>
+            <ellipse cx="77" cy="65" rx="7" ry="8" fill="#3d1a2e"/>
+            <!-- 눈 하이라이트 -->
+            <circle cx="46" cy="62" r="2.5" fill="white"/>
+            <circle cx="80" cy="62" r="2.5" fill="white"/>
+            <!-- 볼 -->
+            <ellipse cx="32" cy="76" rx="10" ry="7" fill="#ffb3d1" opacity="0.5"/>
+            <ellipse cx="88" cy="76" rx="10" ry="7" fill="#ffb3d1" opacity="0.5"/>
+            <!-- 코 -->
+            <ellipse cx="60" cy="76" rx="4" ry="3" fill="#ff85b3"/>
+            <!-- 입 -->
+            <path d="M52 82 Q60 90 68 82" stroke="#e8478a" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <!-- 수염 -->
+            <line x1="20" y1="74" x2="48" y2="76" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="20" y1="80" x2="48" y2="80" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="72" y1="76" x2="100" y2="74" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="72" y1="80" x2="100" y2="80" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
+            <!-- 리본 -->
+            <path d="M45 30 Q60 22 75 30 Q60 38 45 30Z" fill="#ff85b3"/>
+            <circle cx="60" cy="30" r="4" fill="#e8478a"/>
+            <!-- 몸통 -->
+            <ellipse cx="60" cy="118" rx="32" ry="18" fill="#fff0f5" stroke="#ffb3d1" stroke-width="1.5"/>
+            <!-- 꼬리 -->
+            <path d="M88 112 Q108 100 105 82 Q102 68 95 72" stroke="#ffb3d1" stroke-width="4" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+
+        <div class="header-title-wrap">
+          <h1 class="header-title">유니의 마지막 도전</h1>
+          <p class="header-title-sub">🌸 2026 수험생활 기록 🌸</p>
+        </div>
       </div>
-      <div class="dday-card">
-        <p class="dday-label">수능까지</p>
-        <p class="dday-num" id="ddayNum">D-???</p>
-        <p class="dday-date">2026.11.19</p>
+
+      <!-- 오른쪽: 명언 카드 -->
+      <div class="quote-card" id="quoteCard">
+        <p class="quote-text" id="quoteText"></p>
+        <p class="quote-author" id="quoteAuthor"></p>
       </div>
     </div>
+
+    <!-- 달 이동 -->
     <div class="month-nav">
       <button class="month-btn" id="prevMonth">‹</button>
-      <h2 class="month-title" id="monthTitle">2026년 6월</h2>
+      <h2 class="month-title" id="monthTitle"></h2>
       <button class="month-btn" id="nextMonth">›</button>
     </div>
   </header>
 
+  <!-- 달력 -->
   <main class="calendar-wrap">
     <div class="calendar-header">
       <span>일</span><span>월</span><span>화</span><span>수</span>
@@ -52,7 +102,6 @@
       <button class="modal-close" id="dayModalClose">✕</button>
       <div class="day-modal-header">
         <h3 class="day-modal-date" id="dayModalDate"></h3>
-        <p class="day-modal-dday" id="dayModalDday"></p>
         <p class="day-modal-special" id="dayModalSpecial"></p>
       </div>
       <div class="day-photos" id="dayPhotos"></div>

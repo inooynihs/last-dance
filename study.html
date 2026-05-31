@@ -27,42 +27,61 @@
 
       <!-- 왼쪽: 고양이 + 타이틀 -->
       <div class="header-left">
-        <!-- SVG 고양이 캐릭터 -->
+        <!-- SVG 치비 캐릭터 (핑크 머리, 큰 눈, 리본, 꽃) -->
         <div class="cat-wrap">
-          <svg class="cat-svg" viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- 귀 -->
-            <path d="M22 38 L10 10 L38 28 Z" fill="#ffb3d1" stroke="#ff85b3" stroke-width="1.5" stroke-linejoin="round"/>
-            <path d="M98 38 L110 10 L82 28 Z" fill="#ffb3d1" stroke="#ff85b3" stroke-width="1.5" stroke-linejoin="round"/>
-            <!-- 귀 안쪽 -->
-            <path d="M24 34 L16 16 L34 28 Z" fill="#ffd6e7"/>
-            <path d="M96 34 L104 16 L86 28 Z" fill="#ffd6e7"/>
+          <svg class="cat-svg" viewBox="0 0 110 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 몸통 (흰 자켓) -->
+            <ellipse cx="55" cy="125" rx="30" ry="22" fill="white" stroke="#e0e0e0" stroke-width="1.5"/>
+            <!-- 스커트 (빨간) -->
+            <path d="M30 135 Q55 148 80 135 L78 150 Q55 155 32 150 Z" fill="#e53935"/>
+            <!-- 팔 왼쪽 -->
+            <ellipse cx="24" cy="118" rx="8" ry="14" fill="white" stroke="#e0e0e0" stroke-width="1.2" transform="rotate(-15 24 118)"/>
+            <!-- 팔 오른쪽 -->
+            <ellipse cx="86" cy="118" rx="8" ry="14" fill="white" stroke="#e0e0e0" stroke-width="1.2" transform="rotate(15 86 118)"/>
+            <!-- 목 -->
+            <rect x="48" y="92" width="14" height="12" rx="4" fill="#ffe0b2"/>
             <!-- 얼굴 -->
-            <circle cx="60" cy="72" r="46" fill="#fff0f5" stroke="#ffb3d1" stroke-width="2"/>
-            <!-- 눈 -->
-            <ellipse cx="43" cy="65" rx="7" ry="8" fill="#3d1a2e"/>
-            <ellipse cx="77" cy="65" rx="7" ry="8" fill="#3d1a2e"/>
-            <!-- 눈 하이라이트 -->
-            <circle cx="46" cy="62" r="2.5" fill="white"/>
-            <circle cx="80" cy="62" r="2.5" fill="white"/>
-            <!-- 볼 -->
-            <ellipse cx="32" cy="76" rx="10" ry="7" fill="#ffb3d1" opacity="0.5"/>
-            <ellipse cx="88" cy="76" rx="10" ry="7" fill="#ffb3d1" opacity="0.5"/>
+            <ellipse cx="55" cy="72" rx="32" ry="30" fill="#ffe0b2" stroke="#ffb3d1" stroke-width="1.5"/>
+            <!-- 핑크 머리 (큰 모자처럼) -->
+            <ellipse cx="55" cy="52" rx="36" ry="28" fill="#f48fb1"/>
+            <!-- 머리 앞머리 -->
+            <path d="M22 58 Q30 44 44 50 Q50 42 55 48 Q60 42 66 50 Q80 44 88 58" fill="#f48fb1" stroke="#f48fb1" stroke-width="1"/>
+            <!-- 흰 리본 (왼쪽 큰 리본) -->
+            <path d="M14 45 Q24 38 28 48 Q24 52 14 45Z" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+            <path d="M14 45 Q18 55 28 52 Q24 52 14 45Z" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+            <circle cx="22" cy="48" r="4" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+            <!-- 꽃 장식 (오른쪽) -->
+            <circle cx="80" cy="36" r="8" fill="white" stroke="#ffb3d1" stroke-width="1.5"/>
+            <circle cx="74" cy="31" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
+            <circle cx="86" cy="31" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
+            <circle cx="74" cy="41" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
+            <circle cx="86" cy="41" r="5" fill="white" stroke="#ffb3d1" stroke-width="1"/>
+            <circle cx="80" cy="36" r="4" fill="#fff9c4"/>
+            <!-- 눈 (크고 동글동글) -->
+            <circle cx="43" cy="68" r="10" fill="white"/>
+            <circle cx="43" cy="68" r="8" fill="#1a1a2e"/>
+            <circle cx="46" cy="65" r="3" fill="white"/>
+            <circle cx="43" cy="73" r="1.5" fill="white" opacity="0.6"/>
+            <circle cx="67" cy="68" r="10" fill="white"/>
+            <circle cx="67" cy="68" r="8" fill="#1a1a2e"/>
+            <circle cx="70" cy="65" r="3" fill="white"/>
+            <circle cx="67" cy="73" r="1.5" fill="white" opacity="0.6"/>
+            <!-- 속눈썹 -->
+            <path d="M34 61 Q35 58 37 60" stroke="#1a1a2e" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M52 61 Q51 58 49 60" stroke="#1a1a2e" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <!-- 볼 (핑크) -->
+            <ellipse cx="32" cy="76" rx="9" ry="6" fill="#f48fb1" opacity="0.45"/>
+            <ellipse cx="78" cy="76" rx="9" ry="6" fill="#f48fb1" opacity="0.45"/>
             <!-- 코 -->
-            <ellipse cx="60" cy="76" rx="4" ry="3" fill="#ff85b3"/>
+            <path d="M52 77 Q55 80 58 77" stroke="#e91e63" stroke-width="1.5" stroke-linecap="round" fill="none"/>
             <!-- 입 -->
-            <path d="M52 82 Q60 90 68 82" stroke="#e8478a" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-            <!-- 수염 -->
-            <line x1="20" y1="74" x2="48" y2="76" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="20" y1="80" x2="48" y2="80" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="72" y1="76" x2="100" y2="74" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="72" y1="80" x2="100" y2="80" stroke="#c490ad" stroke-width="1.2" stroke-linecap="round"/>
-            <!-- 리본 -->
-            <path d="M45 30 Q60 22 75 30 Q60 38 45 30Z" fill="#ff85b3"/>
-            <circle cx="60" cy="30" r="4" fill="#e8478a"/>
-            <!-- 몸통 -->
-            <ellipse cx="60" cy="118" rx="32" ry="18" fill="#fff0f5" stroke="#ffb3d1" stroke-width="1.5"/>
-            <!-- 꼬리 -->
-            <path d="M88 112 Q108 100 105 82 Q102 68 95 72" stroke="#ffb3d1" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <path d="M48 83 Q55 90 62 83" stroke="#c2185b" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <!-- 옷 단추 -->
+            <circle cx="55" cy="108" r="2.5" fill="#ffb3d1"/>
+            <circle cx="55" cy="116" r="2.5" fill="#ffb3d1"/>
+            <!-- 발 (빨간 부츠) -->
+            <ellipse cx="43" cy="148" rx="10" ry="6" fill="#e53935" stroke="#c62828" stroke-width="1"/>
+            <ellipse cx="67" cy="148" rx="10" ry="6" fill="#e53935" stroke="#c62828" stroke-width="1"/>
           </svg>
         </div>
 

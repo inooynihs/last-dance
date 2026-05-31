@@ -39,21 +39,21 @@ const SPECIAL_DAYS = {
 const QUOTES = [
   { text: "오늘 할 수 있는 일을 내일로 미루지 마라.", author: "벤자민 프랭클린" },
   { text: "천 리 길도 한 걸음부터.", author: "노자" },
-  { text: "포기하지 않는 한 실패는 없다.", author: "알버트 아인슈타인" },
-  { text: "지금 이 순간이 인생에서 가장 젊은 때다.", author: "익명" },
   { text: "고통은 일시적이지만 포기는 영원하다.", author: "랜스 암스트롱" },
-  { text: "노력은 배신하지 않는다.", author: "익명" },
-  { text: "꿈을 꾸는 자만이 그 꿈을 이룰 수 있다.", author: "익명" },
-  { text: "힘들다고 멈추면 더 힘들어진다.", author: "익명" },
-  { text: "오늘의 나는 내일의 나를 위한 선물이다.", author: "익명" },
-  { text: "작은 진전도 진전이다. 스스로를 칭찬해 줘.", author: "익명" },
+  { text: "당신이 할 수 있다고 믿든, 할 수 없다고 믿든 — 당신이 옳다.", author: "헨리 포드" },
+  { text: "성공은 최선을 다한 것에 대한 보상이다.", author: "콜린 파월" },
+  { text: "시작이 반이다.", author: "아리스토텔레스" },
+  { text: "인내는 쓰지만 그 열매는 달다.", author: "루소" },
+  { text: "꿈을 향해 나아가라, 두려움이 없는 사람처럼.", author: "마크 트웨인" },
+  { text: "당신의 시간은 한정되어 있다. 다른 사람의 삶을 살면서 낭비하지 마라.", author: "스티브 잡스" },
+  { text: "인생을 건 시험에 투머치는 없다.", author: "이원준T" },
   { text: "유니, 넌 할 수 있어! 🌸", author: "응원단" },
 ];
 
 /* ── 상태 ── */
 let isAdminMode  = false;
 let currentYear  = 2026;
-let currentMonth = 4; // 5월 (0-indexed)
+let currentMonth = 5; // 6월 (0-indexed) - 5월31일은 6월 달력에 포함
 let selectedDate = null;
 let diaryCache   = {};
 let quoteIdx     = 0;
@@ -103,8 +103,7 @@ function formatDateLabel(key) {
 
 /* ── 달 이동 제한 체크 ── */
 function canGoPrev() {
-  if (currentYear > 2026) return false;
-  if (currentYear === 2026 && currentMonth <= 4) return false; // 5월 이전 불가
+  if (currentYear === 2026 && currentMonth <= 5) return false; // 6월 이전 불가
   return true;
 }
 function canGoNext() {
@@ -170,101 +169,99 @@ function uploadPhoto(file) {
 /* ── 달력 렌더링 ── */
 const MONTH_NAMES = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
+/** 날짜 셀 하나 생성 */
+function makeDayCell(key, displayNum, year, month, day) {
+  const today   = new Date();
+  const entry   = diaryCache[key];
+  const special = SPECIAL_DAYS[key];
+  const dow     = new Date(year, month, day).getDay();
+  const cell    = document.createElement('div');
+
+  cell.className = 'day-cell';
+  if (dow === 0) cell.classList.add('sunday');
+  if (dow === 6) cell.classList.add('saturday');
+  if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear())
+    cell.classList.add('today');
+  if (entry && (entry.photos?.length || entry.comment)) cell.classList.add('has-content');
+  if (special) cell.classList.add('special-day');
+
+  const numEl = document.createElement('span');
+  numEl.className = 'day-num';
+  numEl.textContent = displayNum;
+  cell.appendChild(numEl);
+
+  if (special) {
+    const label = document.createElement('span');
+    label.className = 'day-special-label';
+    label.textContent = special;
+    cell.appendChild(label);
+  }
+  if (entry?.photos?.length) {
+    const img = document.createElement('img');
+    img.src = entry.photos[0].url; img.className = 'day-thumb'; img.loading = 'lazy';
+    cell.appendChild(img);
+  }
+  if (entry?.comment && !entry?.photos?.length) {
+    const p = document.createElement('p');
+    p.className = 'day-comment-preview'; p.textContent = entry.comment;
+    cell.appendChild(p);
+  }
+  if (entry && (entry.photos?.length || entry.comment)) {
+    const dot = document.createElement('div'); dot.className = 'day-dot'; cell.appendChild(dot);
+  }
+  cell.addEventListener('click', () => openDayModal(key));
+  return cell;
+}
+
 async function renderCalendar() {
   document.getElementById('monthTitle').textContent = `${currentYear}년 ${MONTH_NAMES[currentMonth]}`;
-
-  // 이전/다음 버튼 상태
   document.getElementById('prevMonth').style.opacity = canGoPrev() ? '1' : '0.3';
   document.getElementById('nextMonth').style.opacity = canGoNext() ? '1' : '0.3';
 
+  // 6월이면 5월 31일 데이터도 함께 로드
+  if (currentYear === 2026 && currentMonth === 5) {
+    await loadMonth(2026, 4); // 5월 데이터
+  }
   await loadMonth(currentYear, currentMonth);
 
   const grid = document.getElementById('calendarGrid');
   grid.innerHTML = '';
 
-  const today      = new Date();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  let endDay = (currentYear === 2026 && currentMonth === 10) ? 20 : daysInMonth;
 
-  // 이 달에서 보여줄 날짜 범위 결정
-  let startDay = 1;
-  let endDay   = daysInMonth;
+  // 6월: 5/31 칸을 달력 맨 앞에 삽입
+  if (currentYear === 2026 && currentMonth === 5) {
+    const may31Key = '2026-05-31';
+    const may31Dow = new Date(2026, 4, 31).getDay(); // 일요일=0
 
-  // 5월: 31일만
-  if (currentYear === 2026 && currentMonth === 4) {
-    startDay = 31; endDay = 31;
-  }
-  // 11월: 1~20일만
-  if (currentYear === 2026 && currentMonth === 10) {
-    endDay = 20;
-  }
-
-  // 첫 날 요일 계산 (startDay 기준)
-  const firstDow = new Date(currentYear, currentMonth, startDay).getDay();
-
-  // 빈칸
-  for (let i = 0; i < firstDow; i++) {
-    const el = document.createElement('div');
-    el.className = 'day-cell empty';
-    grid.appendChild(el);
+    // 5/31 앞 빈칸
+    for (let i = 0; i < may31Dow; i++) {
+      const el = document.createElement('div'); el.className = 'day-cell empty'; grid.appendChild(el);
+    }
+    // 5/31 셀 (날짜 표시: "5/31")
+    grid.appendChild(makeDayCell(may31Key, '5/31', 2026, 4, 31));
+    // 6/1 빈칸 (5/31 이후 ~ 6/1 요일까지)
+    const june1Dow = new Date(2026, 5, 1).getDay();
+    // 그리드 현재 셀 수 = may31Dow + 1
+    const filledSoFar = may31Dow + 1;
+    const emptyNeeded = june1Dow - (filledSoFar % 7);
+    const blanks = emptyNeeded < 0 ? emptyNeeded + 7 : emptyNeeded;
+    for (let i = 0; i < blanks; i++) {
+      const el = document.createElement('div'); el.className = 'day-cell empty'; grid.appendChild(el);
+    }
+  } else {
+    // 일반 달: 1일 앞 빈칸
+    const firstDow = new Date(currentYear, currentMonth, 1).getDay();
+    for (let i = 0; i < firstDow; i++) {
+      const el = document.createElement('div'); el.className = 'day-cell empty'; grid.appendChild(el);
+    }
   }
 
   // 날짜 셀
-  for (let d = startDay; d <= endDay; d++) {
-    const key     = dateKey(currentYear, currentMonth, d);
-    const entry   = diaryCache[key];
-    const special = SPECIAL_DAYS[key];
-    const dow     = new Date(currentYear, currentMonth, d).getDay();
-
-    const cell = document.createElement('div');
-    cell.className = 'day-cell';
-    if (dow === 0) cell.classList.add('sunday');
-    if (dow === 6) cell.classList.add('saturday');
-    if (d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
-      cell.classList.add('today');
-    }
-    if (entry && (entry.photos?.length || entry.comment)) cell.classList.add('has-content');
-    if (special) cell.classList.add('special-day');
-
-    // 날짜 숫자
-    const numEl = document.createElement('span');
-    numEl.className = 'day-num';
-    numEl.textContent = d;
-    cell.appendChild(numEl);
-
-    // 특별한 날 라벨
-    if (special) {
-      const label = document.createElement('span');
-      label.className = 'day-special-label';
-      label.textContent = special;
-      cell.appendChild(label);
-    }
-
-    // 썸네일
-    if (entry?.photos?.length) {
-      const img = document.createElement('img');
-      img.src = entry.photos[0].url;
-      img.className = 'day-thumb';
-      img.loading = 'lazy';
-      cell.appendChild(img);
-    }
-
-    // 코멘트 미리보기
-    if (entry?.comment && !entry?.photos?.length) {
-      const prev = document.createElement('p');
-      prev.className = 'day-comment-preview';
-      prev.textContent = entry.comment;
-      cell.appendChild(prev);
-    }
-
-    // 기록 점
-    if (entry && (entry.photos?.length || entry.comment)) {
-      const dot = document.createElement('div');
-      dot.className = 'day-dot';
-      cell.appendChild(dot);
-    }
-
-    cell.addEventListener('click', () => openDayModal(key));
-    grid.appendChild(cell);
+  for (let d = 1; d <= endDay; d++) {
+    const key = dateKey(currentYear, currentMonth, d);
+    grid.appendChild(makeDayCell(key, d, currentYear, currentMonth, d));
   }
 }
 

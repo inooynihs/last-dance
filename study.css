@@ -86,7 +86,7 @@ body {
   filter: drop-shadow(0 4px 10px rgba(232,71,138,.25));
   animation: cat-bob 3s ease-in-out infinite;
 }
-.cat-svg { width: 100px; height: 110px; }
+.cat-svg { width: 90px; height: 123px; }
 
 @keyframes cat-bob {
   0%,100% { transform: translateY(0) rotate(-2deg); }

@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>유니의 마지막 도전 🌸</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&family=Noto+Sans+KR:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&family=Noto+Sans+KR:wght@300;400;500&family=Jua&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="study.css"/>
 </head>
 <body>
 
-  <!-- 배경 장식 -->
   <div class="bg-deco">
     <div class="petal p1">🌸</div>
     <div class="petal p2">🌷</div>
@@ -21,12 +20,10 @@
     <div class="petal p6">🌷</div>
   </div>
 
-  <!-- 헤더 -->
   <header class="site-header">
     <div class="header-inner">
       <div class="header-title-wrap">
-        <p class="header-sub">유니의 마지막 도전</p>
-        <h1 class="header-title">수험 일기 <span class="title-deco">🌸</span></h1>
+        <h1 class="header-title">유니의 마지막 도전 🌸</h1>
       </div>
       <div class="dday-card">
         <p class="dday-label">수능까지</p>
@@ -34,8 +31,6 @@
         <p class="dday-date">2026.11.19</p>
       </div>
     </div>
-
-    <!-- 달 이동 -->
     <div class="month-nav">
       <button class="month-btn" id="prevMonth">‹</button>
       <h2 class="month-title" id="monthTitle">2026년 6월</h2>
@@ -43,7 +38,6 @@
     </div>
   </header>
 
-  <!-- 달력 -->
   <main class="calendar-wrap">
     <div class="calendar-header">
       <span>일</span><span>월</span><span>화</span><span>수</span>
@@ -52,25 +46,20 @@
     <div class="calendar-grid" id="calendarGrid"></div>
   </main>
 
-  <!-- 날짜 상세 모달 -->
+  <!-- 날짜 모달 -->
   <div class="modal-overlay" id="dayModal">
     <div class="modal day-modal">
       <button class="modal-close" id="dayModalClose">✕</button>
       <div class="day-modal-header">
         <h3 class="day-modal-date" id="dayModalDate"></h3>
         <p class="day-modal-dday" id="dayModalDday"></p>
+        <p class="day-modal-special" id="dayModalSpecial"></p>
       </div>
-
-      <!-- 사진 영역 -->
       <div class="day-photos" id="dayPhotos"></div>
-
-      <!-- 코멘트 -->
       <div class="day-comment-wrap">
         <p class="day-comment-text" id="dayCommentText"></p>
         <div class="day-comment-empty" id="dayCommentEmpty">오늘의 기록이 없어요 🌸</div>
       </div>
-
-      <!-- 편집 모드 UI -->
       <div class="day-edit-ui" id="dayEditUi" style="display:none;">
         <button class="add-photo-btn" id="addPhotoBtn">📷 사진 추가</button>
         <textarea class="comment-input" id="commentInput" placeholder="오늘 하루 어떠셨나요? 🌷" rows="3"></textarea>
@@ -91,17 +80,12 @@
     </div>
   </div>
 
-  <!-- 관리자 툴바 -->
   <div class="admin-bar" id="adminBar">
     <span>✏️ 편집 모드</span>
     <button class="admin-exit-btn" id="adminExitBtn">종료</button>
   </div>
 
-  <!-- 잠금 버튼 -->
   <button class="lock-fab" id="lockFab" title="편집 모드">🔒</button>
-
-  <!-- 아카이브 돌아가기 -->
-  <a href="../index.html" class="back-link">← 아카이브로</a>
 
   <script type="module" src="study.js"></script>
 </body>

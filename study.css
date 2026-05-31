@@ -81,6 +81,17 @@ body {
   margin-bottom: 20px;
 }
 
+/* 태블릿 이하에서도 세로 배치 */
+@media (max-width: 780px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .header-left { flex-direction: column; align-items: center; }
+  .quote-card { width: 100%; max-width: 100%; order: 9; }
+}
+
 /* 왼쪽: 고양이 + 타이틀 */
 .header-left {
   display: flex; align-items: center; gap: 18px;
@@ -523,12 +534,29 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--pink-3); border-radius: 3px; }
 
 @media (max-width: 640px) {
-  .header-left { flex-direction: column; align-items: center; text-align: center; }
-  .cat-svg { width: 80px; height: 88px; }
-  .header-inner { justify-content: center; }
-  .quote-card { max-width: 100%; }
-  .day-cell { min-height: 72px; }
-  .calendar-wrap { padding: 0 12px 100px; }
+  /* 헤더 세로 배치 */
+  .header-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .header-left {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+  .cat-img { width: 100px; height: auto; }
+  /* 명언 카드 항상 맨 아래 */
+  .quote-card {
+    width: 100%;
+    max-width: 100%;
+    order: 9;
+  }
+  .header-title { font-size: 1.8rem; }
+  .day-cell { min-height: 68px; }
+  .calendar-wrap { padding: 0 10px 100px; }
 }
 
 /* ── SVG 미니 장식 ── */

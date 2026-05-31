@@ -26,7 +26,7 @@ const COLLECTION     = 'study_diary';
 
 /* ── 달력 범위: 2026.05.31 ~ 2026.11.20 ── */
 const START = { year: 2026, month: 4, day: 31 }; // month 0-indexed
-const END   = { year: 2026, month: 10, day: 20 };
+const END   = { year: 2026, month: 10, day: 19 };
 
 /* ── 특별한 날 ── */
 const SPECIAL_DAYS = {

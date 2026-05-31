@@ -386,52 +386,72 @@ document.getElementById('saveDayBtn').addEventListener('click', async () => {
 
 /* ── 사진 라이트박스 ── */
 let lbPhotos = [], lbIdx = 0;
-let lbEl = null;
-
-function initLightbox() {
-  lbEl = document.createElement('div');
-  lbEl.id = 'photoLightbox';
-  lbEl.className = 'photo-lightbox';
-  lbEl.innerHTML = `
-    <button class="lb-close" id="lbClose">✕</button>
-    <button class="lb-nav lb-prev" id="lbPrev">‹</button>
-    <div class="lb-img-wrap"><img class="lb-img" id="lbImg" src="" alt=""></div>
-    <button class="lb-nav lb-next" id="lbNext">›</button>
-    <p class="lb-counter" id="lbCounter"></p>`;
-  document.body.appendChild(lbEl);
-
-  document.getElementById('lbClose').addEventListener('click', lbClose);
-  lbEl.addEventListener('click', function(e) { if (e.target === lbEl) lbClose(); });
-  document.getElementById('lbPrev').addEventListener('click', function() {
-    lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; lbUpdate();
-  });
-  document.getElementById('lbNext').addEventListener('click', function() {
-    lbIdx = (lbIdx + 1) % lbPhotos.length; lbUpdate();
-  });
-  document.addEventListener('keydown', e => {
-    if (!lbEl?.classList.contains('open')) return;
-    if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; lbUpdate(); }
-    if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbPhotos.length; lbUpdate(); }
-    if (e.key === 'Escape')     lbClose();
-  });
-}
-
-function lbUpdate() {
-  document.getElementById('lbImg').src = lbPhotos[lbIdx].url;
-  document.getElementById('lbCounter').textContent = (lbIdx + 1) + ' / ' + lbPhotos.length;
-}
-
-function lbClose() {
-  lbEl?.classList.remove('open');
-  document.body.style.overflow = '';
-}
 
 function openPhotoLightbox(photos, startIndex) {
-  if (!lbEl) initLightbox();
-  lbPhotos = photos;
-  lbIdx    = startIndex;
-  lbUpdate();
-  lbEl.classList.add('open');
+  document.getElementById('photoLightbox')?.remove();
+
+  lbPhotos = photos.slice();
+  lbIdx = startIndex;
+
+  const lbEl = document.createElement('div');
+  lbEl.id = 'photoLightbox';
+  lbEl.className = 'photo-lightbox';
+  document.body.appendChild(lbEl);
+
+  const imgEl = document.createElement('img');
+  imgEl.className = 'lb-img';
+  imgEl.src = lbPhotos[lbIdx].url;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'lb-img-wrap';
+  wrap.appendChild(imgEl);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'lb-close';
+  closeBtn.textContent = '✕';
+
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'lb-nav lb-prev';
+  prevBtn.textContent = '‹';
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'lb-nav lb-next';
+  nextBtn.textContent = '›';
+
+  const counter = document.createElement('p');
+  counter.className = 'lb-counter';
+  counter.textContent = (lbIdx + 1) + ' / ' + lbPhotos.length;
+
+  lbEl.appendChild(closeBtn);
+  lbEl.appendChild(prevBtn);
+  lbEl.appendChild(wrap);
+  lbEl.appendChild(nextBtn);
+  lbEl.appendChild(counter);
+
+  function update() {
+    imgEl.src = lbPhotos[lbIdx].url;
+    counter.textContent = (lbIdx + 1) + ' / ' + lbPhotos.length;
+  }
+
+  function close() {
+    lbEl.remove();
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', keyHandler);
+  }
+
+  function keyHandler(e) {
+    if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; update(); }
+    if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbPhotos.length; update(); }
+    if (e.key === 'Escape')     close();
+  }
+
+  closeBtn.addEventListener('click', close);
+  lbEl.addEventListener('click', function(e) { if (e.target === lbEl) close(); });
+  prevBtn.addEventListener('click', function() { lbIdx = (lbIdx - 1 + lbPhotos.length) % lbPhotos.length; update(); });
+  nextBtn.addEventListener('click', function() { lbIdx = (lbIdx + 1) % lbPhotos.length; update(); });
+  document.addEventListener('keydown', keyHandler);
+
+  requestAnimationFrame(function() { lbEl.classList.add('open'); });
   document.body.style.overflow = 'hidden';
 }
 

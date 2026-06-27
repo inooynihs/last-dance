@@ -400,33 +400,30 @@ body {
 /* 모바일 전용 버튼 — 기본(PC)에서는 숨김, 좁은 화면에서만 표시 */
 .day-modal-nav-mobile { display: none; }
 
-/* 모바일: 화면이 좁으면 바깥 flex 버튼은 숨기고, 모달 내부 absolute 버튼으로 교체 */
+/* 모바일: 버튼은 화면 가장자리에 작게 고정, 모달은 남는 공간을 최대한 사용 */
 @media (max-width: 560px) {
-  .modal-overlay { padding: 16px; gap: 0; }
-  .day-modal-nav { display: none; } /* 바깥 버튼 숨김 — 화면 밖으로 밀려나는 문제 방지 */
+  .modal-overlay { padding: 6px; gap: 4px; }
 
-  .day-modal { position: relative; } /* 자식 absolute 버튼의 기준점 */
-
-  .day-modal-nav-mobile {
-    display: flex !important;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: white;
-    border: 2px solid var(--pink-3);
-    color: var(--pink-5);
-    font-size: 1.25rem;
-    align-items: center; justify-content: center;
-    cursor: pointer;
-    z-index: 25;
-    box-shadow: var(--shadow);
+  .day-modal-nav {
+    display: flex; /* 바깥 버튼 계속 사용 (PC와 동일한 위치 컨셉) */
+    width: 30px; height: 30px;
+    font-size: 1.15rem;
+    flex-shrink: 0;
   }
-  .day-modal-nav-mobile:disabled { opacity: .3; cursor: not-allowed; }
-  .day-modal-nav-mobile.prev { left: 8px; }
-  .day-modal-nav-mobile.next { right: 8px; }
+
+  /* 모달이 남는 가로 공간을 최대한 채우도록 — 화면이 좁아도 버튼 둘 다 항상 화면 안에 보임 */
+  .day-modal {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    padding: 24px 16px 18px; /* 좌우 패딩 줄여서 콘텐츠 공간 확보 */
+  }
+  .day-modal-header { padding-right: 32px; }
 }
+
+/* 모바일 전용 안쪽 버튼은 더 이상 사용하지 않음 */
+.day-modal-nav-mobile { display: none !important; }
 
 /* 사진이 1장일 때: 원본 비율 그대로(정사각형 강제 X), 모달 너비에 맞춰 최대한 크게 */
 .day-photos {
@@ -636,4 +633,7 @@ body {
 }
 @media (max-width: 400px) {
   .day-cell { height: 80px; }
+  .modal-overlay { padding: 3px; gap: 2px; }
+  .day-modal-nav { width: 26px; height: 26px; font-size: 1rem; }
+  .day-modal { padding: 22px 12px 16px; }
 }

@@ -227,15 +227,16 @@ body {
   gap: 1.5px;
 }
 
-/* 날짜 셀 */
+/* 날짜 셀 — 고정 높이, 내용 많아져도 절대 안 늘어남 */
 .day-cell {
   background: white;
   padding: 8px 7px 7px;
-  min-height: 90px;
+  height: 90px;          /* min-height → height 고정 */
+  max-height: 90px;
   cursor: pointer;
   position: relative;
   transition: background .2s, transform .15s;
-  overflow: hidden;
+  overflow: hidden;       /* 넘치는 내용은 잘림 */
 }
 .day-cell:hover { background: #fff5f9; transform: scale(1.02); z-index: 2; }
 .day-cell.empty { background: rgba(255,240,248,.5); cursor: default; }
@@ -247,7 +248,7 @@ body {
 /* 기록 있는 날 */
 .day-cell.has-content { background: #fff8fc; }
 
-/* 특별한 날 */
+/* 특별한 날 — 배경만 살짝 다르게, 크기에는 영향 없음 */
 .day-cell.special-day { background: linear-gradient(135deg, #fffde7, #fff9c4) !important; }
 
 .day-cell.sunday  .day-num { color: var(--pink-5); }
@@ -256,7 +257,8 @@ body {
 .day-num {
   font-family: 'Cute Font', sans-serif;
   font-size: .9rem; color: var(--text);
-  display: block; margin-bottom: 3px;
+  display: block; margin-bottom: 2px;
+  position: relative; z-index: 2;
 }
 .day-cell.today .day-num {
   background: var(--pink-4); color: white;
@@ -265,33 +267,53 @@ body {
   font-size: .78rem;
 }
 
+/* 특별한 날 라벨 — 작은 동그라미 뱃지로, 날짜 숫자 옆에 붙임 */
 .day-special-label {
-  font-family: 'Cute Font', sans-serif;
-  font-size: .62rem; color: #795548;
-  background: var(--yellow);
-  border: 1px solid var(--yellow-2);
-  border-radius: 6px; padding: 1px 5px;
-  display: inline-block; margin-bottom: 3px;
+  position: absolute;
+  top: 6px; right: 5px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--yellow-2);
+  border: 1px solid #f5c542;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .6rem;
+  z-index: 3;
+  /* 텍스트(예: 🎓 종강)가 길어도 이모지 한 글자만 보이도록 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
 }
+/* 라벨 텍스트 중 이모지만 보이게 하기 위해 폭을 줄이고 가운데 정렬 */
+.day-special-label::first-letter { }
 
+/* 사진 썸네일 — 작은 동그라미로, 셀 크기에 영향 안 줌 */
 .day-thumb {
-  width: 100%; aspect-ratio: 1;
-  border-radius: 6px; object-fit: cover;
-  margin-top: 3px; display: block;
+  position: absolute;
+  bottom: 6px; left: 6px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--pink-3);
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  z-index: 2;
 }
 
+/* 코멘트 미리보기 — 한 줄만, 작게, 넘치면 잘림 */
 .day-comment-preview {
   font-family: 'Cute Font', sans-serif;
-  font-size: .64rem; color: var(--text-m);
-  line-height: 1.3; margin-top: 3px;
-  display: -webkit-box; -webkit-line-clamp: 2;
+  font-size: .6rem; color: var(--text-m);
+  line-height: 1.3; margin-top: 2px;
+  display: -webkit-box; -webkit-line-clamp: 1;
   -webkit-box-orient: vertical; overflow: hidden;
+  position: relative; z-index: 1;
+  padding-right: 22px; /* 라벨/사진과 안 겹치게 여백 */
 }
 
 .day-dot {
-  position: absolute; bottom: 5px; right: 6px;
+  position: absolute; bottom: 6px; right: 6px;
   width: 6px; height: 6px;
   border-radius: 50%; background: var(--pink-4);
+  z-index: 2;
 }
 
 /* ══════════════════════════════════════
@@ -338,6 +360,35 @@ body {
   font-size: .88rem; color: #795548;
   background: var(--yellow); border: 1px solid var(--yellow-2);
   border-radius: 8px; padding: 3px 10px; display: inline-block;
+}
+
+/* 날짜 모달 좌우 이동 버튼 — 모달 바로 옆, 화면 고정 위치 */
+.day-modal-nav {
+  position: fixed;
+  top: 50%; transform: translateY(-50%);
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--pink-3);
+  color: var(--pink-5);
+  font-size: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all .2s var(--spring);
+  z-index: 20;
+}
+.day-modal-nav:hover { background: var(--pink-4); color: white; transform: translateY(-50%) scale(1.1); }
+.day-modal-nav:disabled,
+.day-modal-nav[style*="opacity: .3"] { cursor: not-allowed; }
+.day-modal-prev { left: calc(50% - min(480px,90%)/2 - 56px); }
+.day-modal-next { right: calc(50% - min(480px,90%)/2 - 56px); }
+
+/* 모바일에서는 모달 안쪽 좌우에 붙임 */
+@media (max-width: 600px) {
+  .day-modal-nav { position: absolute; top: 50%; }
+  .day-modal-prev { left: 6px; }
+  .day-modal-next { right: 6px; }
 }
 
 .day-photos {

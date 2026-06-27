@@ -193,7 +193,11 @@ function makeDayCell(key, displayNum, year, month, day) {
   if (special) {
     const label = document.createElement('span');
     label.className = 'day-special-label';
-    label.textContent = special;
+    // "🎓 종강" 처럼 "이모지 + 텍스트" 형태이므로 첫 글자(이모지)만 뱃지에 표시
+    // 전체 텍스트는 title(말풍선 툴팁)로 남겨서 호버 시 확인 가능
+    const emojiMatch = special.match(/^\S+/); // 첫 공백 전까지(이모지)
+    label.textContent = emojiMatch ? emojiMatch[0] : special;
+    label.title = special;
     cell.appendChild(label);
   }
   if (entry?.photos?.length) {
@@ -273,6 +277,39 @@ const dayCommentEmpty = document.getElementById('dayCommentEmpty');
 const dayEditUi       = document.getElementById('dayEditUi');
 const commentInput    = document.getElementById('commentInput');
 
+/** key(YYYY-MM-DD)를 Date 객체로 변환 */
+function keyToDate(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/** 달력 허용 범위(START~END) 안에 있는지 체크 */
+function isWithinRange(date) {
+  const start = new Date(START.year, START.month, START.day);
+  const end   = new Date(END.year, END.month, END.day);
+  return date >= start && date <= end;
+}
+
+/** 현재 selectedDate 기준으로 day일 만큼 이동한 key 반환 (범위 밖이면 null) */
+function shiftDateKey(key, dayDelta) {
+  const date = keyToDate(key);
+  date.setDate(date.getDate() + dayDelta);
+  if (!isWithinRange(date)) return null;
+  return dateKey(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/** 좌우 이동 버튼 상태 갱신 (범위 끝이면 비활성화) */
+function updateDayModalNavState() {
+  const prevKey = shiftDateKey(selectedDate, -1);
+  const nextKey = shiftDateKey(selectedDate, 1);
+  const prevBtn = document.getElementById('dayModalPrev');
+  const nextBtn = document.getElementById('dayModalNext');
+  prevBtn.disabled = !prevKey;
+  nextBtn.disabled = !nextKey;
+  prevBtn.style.opacity = prevKey ? '1' : '.3';
+  nextBtn.style.opacity = nextKey ? '1' : '.3';
+}
+
 function openDayModal(key) {
   selectedDate = key;
   const entry   = diaryCache[key] || { photos: [], comment: '' };
@@ -298,9 +335,33 @@ function openDayModal(key) {
   dayEditUi.style.display = isAdminMode ? 'block' : 'none';
   if (isAdminMode) commentInput.value = entry.comment || '';
 
+  updateDayModalNavState();
+
   dayModal.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
+/** 모달이 열린 채로 다른 날짜로 이동 (달력 화면도 해당 월로 자동 전환) */
+async function goToAdjacentDay(dayDelta) {
+  const targetKey = shiftDateKey(selectedDate, dayDelta);
+  if (!targetKey) return; // 범위 밖이면 무시
+
+  const [y, m] = targetKey.split('-').map(Number);
+  const targetYear  = y;
+  const targetMonth = m - 1; // 0-indexed
+
+  // 다른 달로 넘어갔다면 달력도 갱신
+  if (targetYear !== currentYear || targetMonth !== currentMonth) {
+    currentYear  = targetYear;
+    currentMonth = targetMonth;
+    await renderCalendar();
+  }
+
+  openDayModal(targetKey);
+}
+
+document.getElementById('dayModalPrev').addEventListener('click', () => goToAdjacentDay(-1));
+document.getElementById('dayModalNext').addEventListener('click', () => goToAdjacentDay(1));
 
 function renderDayPhotos(entry) {
   dayPhotosEl.innerHTML = '';
@@ -505,11 +566,18 @@ document.getElementById('pwConfirm').addEventListener('click', () => {
 pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('pwConfirm').click(); });
 document.getElementById('adminExitBtn').addEventListener('click', () => setAdmin(false));
 
-/* ── ESC ── */
+/* ── ESC + 좌우 화살표 (날짜 모달 이동) ── */
 document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  if (dayModal.classList.contains('open'))  { dayModal.classList.remove('open');  document.body.style.overflow = ''; }
-  else if (pwModal.classList.contains('open')) { pwModal.classList.remove('open'); document.body.style.overflow = ''; }
+  if (e.key === 'Escape') {
+    if (dayModal.classList.contains('open'))  { dayModal.classList.remove('open');  document.body.style.overflow = ''; }
+    else if (pwModal.classList.contains('open')) { pwModal.classList.remove('open'); document.body.style.overflow = ''; }
+    return;
+  }
+  // 날짜 모달이 열려있을 때만 화살표로 날짜 이동 (라이트박스 열려있으면 그쪽이 우선이므로 제외)
+  if (dayModal.classList.contains('open') && !document.querySelector('.photo-lightbox')) {
+    if (e.key === 'ArrowLeft')  goToAdjacentDay(-1);
+    if (e.key === 'ArrowRight') goToAdjacentDay(1);
+  }
 });
 
 /* ── 초기화 ── */

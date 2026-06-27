@@ -402,25 +402,29 @@ body {
   .day-modal-nav { display: none; }
 }
 
-/* 모바일 전용 좌우 버튼 — 모달 헤더 안에, 작게 */
+/* 모바일 전용 좌우 버튼 — 모달 안쪽 좌우 여백에, X버튼과 충돌 없게 */
 .day-modal-nav-mobile { display: none; }
 @media (max-width: 560px) {
-  .day-modal-header { position: relative; padding: 0 36px; }
+  .day-modal { padding: 32px 38px 24px; } /* 좌우 패딩을 넉넉히 줘서 버튼이 안쪽에 들어갈 공간 확보 */
+  .day-modal-header { position: relative; padding-right: 26px; } /* X버튼과 안 겹치게 우측 여백 */
+
   .day-modal-nav-mobile {
     display: flex;
-    position: absolute; top: 0;
-    width: 28px; height: 28px;
+    position: absolute;
+    top: 0;
+    width: 26px; height: 26px;
     border-radius: 50%;
     background: var(--pink-1);
     border: 1.5px solid var(--pink-3);
     color: var(--pink-5);
-    font-size: 1.1rem;
+    font-size: 1rem;
     align-items: center; justify-content: center;
     cursor: pointer;
+    z-index: 15;
   }
   .day-modal-nav-mobile:disabled { opacity: .3; cursor: not-allowed; }
-  .day-modal-nav-mobile.prev { left: 0; }
-  .day-modal-nav-mobile.next { right: 0; }
+  .day-modal-nav-mobile.prev { left: 6px; }
+  .day-modal-nav-mobile.next { right: 6px; }
 }
 
 .day-photos {

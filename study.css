@@ -203,19 +203,30 @@ body {
 .calendar-header {
   display: grid; grid-template-columns: repeat(7,1fr);
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .calendar-header span {
   font-family: 'Cute Font', sans-serif;
-  font-size: .95rem; color: var(--pink-5);
-  padding: 6px 0; text-align: center;
+  font-size: 1rem;
+  text-align: center;
   font-weight: 400;
-  background: white;
-  border: 2px solid var(--pink-2);
-  border-radius: 12px;
+  width: 34px; height: 34px;
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff0f8, #ffe6f2);
+  color: var(--pink-5);
+  box-shadow: 0 2px 6px rgba(255,179,209,.25);
 }
-.calendar-header span:first-child { color: #e8478a; border-color: var(--pink-3); }
-.calendar-header span:last-child  { color: #5b9bd5; border-color: #bcdcf5; }
+.calendar-header span:first-child {
+  color: #e8478a;
+  background: linear-gradient(135deg, #ffe0ee, #ffc9e2);
+}
+.calendar-header span:last-child {
+  color: #5b9bd5;
+  background: linear-gradient(135deg, #e8f4ff, #d6ecff);
+  box-shadow: 0 2px 6px rgba(173,216,255,.3);
+}
 
 /* 달력 그리드 — 셀 사이 간격 넉넉, 카드처럼 독립적으로 */
 .calendar-grid {
@@ -597,8 +608,8 @@ body {
   .day-dot { width: 8px; height: 8px; bottom: 6px; right: 6px; }
   .day-comment-preview { font-size: .58rem; -webkit-line-clamp: 2; }
   .calendar-grid { gap: 6px; }
-  .calendar-header { gap: 6px; }
-  .calendar-header span { font-size: .75rem; padding: 4px 0; border-radius: 8px; }
+  .calendar-header { gap: 5px; }
+  .calendar-header span { width: 26px; height: 26px; font-size: .8rem; }
   .calendar-wrap { padding: 0 10px 100px; }
   .header-title { font-size: 1.6rem; }
 }

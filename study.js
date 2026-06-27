@@ -201,9 +201,12 @@ function makeDayCell(key, displayNum, year, month, day) {
     cell.appendChild(label);
   }
   if (entry?.photos?.length) {
+    const wrap = document.createElement('div');
+    wrap.className = 'day-thumb-wrap';
     const img = document.createElement('img');
     img.src = entry.photos[0].url; img.className = 'day-thumb'; img.loading = 'lazy';
-    cell.appendChild(img);
+    wrap.appendChild(img);
+    cell.appendChild(wrap);
   }
   if (entry?.comment && !entry?.photos?.length) {
     const p = document.createElement('p');
@@ -298,16 +301,20 @@ function shiftDateKey(key, dayDelta) {
   return dateKey(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-/** 좌우 이동 버튼 상태 갱신 (범위 끝이면 비활성화) */
+/** 좌우 이동 버튼 상태 갱신 (범위 끝이면 비활성화) — 데스크탑/모바일 버튼 모두 갱신 */
 function updateDayModalNavState() {
   const prevKey = shiftDateKey(selectedDate, -1);
   const nextKey = shiftDateKey(selectedDate, 1);
-  const prevBtn = document.getElementById('dayModalPrev');
-  const nextBtn = document.getElementById('dayModalNext');
-  prevBtn.disabled = !prevKey;
-  nextBtn.disabled = !nextKey;
-  prevBtn.style.opacity = prevKey ? '1' : '.3';
-  nextBtn.style.opacity = nextKey ? '1' : '.3';
+  ['dayModalPrev', 'dayModalPrevMobile'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.disabled = !prevKey;
+    btn.style.opacity = prevKey ? '1' : '.3';
+  });
+  ['dayModalNext', 'dayModalNextMobile'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.disabled = !nextKey;
+    btn.style.opacity = nextKey ? '1' : '.3';
+  });
 }
 
 function openDayModal(key) {
@@ -362,6 +369,8 @@ async function goToAdjacentDay(dayDelta) {
 
 document.getElementById('dayModalPrev').addEventListener('click', () => goToAdjacentDay(-1));
 document.getElementById('dayModalNext').addEventListener('click', () => goToAdjacentDay(1));
+document.getElementById('dayModalPrevMobile').addEventListener('click', () => goToAdjacentDay(-1));
+document.getElementById('dayModalNextMobile').addEventListener('click', () => goToAdjacentDay(1));
 
 function renderDayPhotos(entry) {
   dayPhotosEl.innerHTML = '';

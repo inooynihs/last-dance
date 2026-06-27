@@ -202,142 +202,119 @@ body {
 
 .calendar-header {
   display: grid; grid-template-columns: repeat(7,1fr);
-  background: linear-gradient(135deg, #ffd9ec, #ffc2e0);
-  border-radius: var(--radius) var(--radius) 0 0;
-  overflow: hidden;
-  margin-bottom: 0;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 .calendar-header span {
   font-family: 'Cute Font', sans-serif;
-  font-size: .92rem; color: #c2185b;
-  padding: 10px 0; text-align: center;
+  font-size: .95rem; color: var(--pink-5);
+  padding: 6px 0; text-align: center;
   font-weight: 400;
+  background: white;
+  border: 2px solid var(--pink-2);
+  border-radius: 12px;
 }
-.calendar-header span:first-child { color: #e8478a; background: rgba(255,255,255,.35); }
-.calendar-header span:last-child  { color: #5b9bd5; background: rgba(255,255,255,.35); }
+.calendar-header span:first-child { color: #e8478a; border-color: var(--pink-3); }
+.calendar-header span:last-child  { color: #5b9bd5; border-color: #bcdcf5; }
 
-/* 달력 그리드 */
+/* 달력 그리드 — 셀 사이 간격 넉넉, 카드처럼 독립적으로 */
 .calendar-grid {
   display: grid; grid-template-columns: repeat(7,1fr);
-  border: 2.5px solid var(--pink-3);
-  border-top: none;
-  border-radius: 0 0 var(--radius) var(--radius);
-  overflow: hidden;
-  background: var(--pink-3);
-  gap: 1.5px;
+  gap: 10px;
 }
 
-/* 날짜 셀 — 고정 높이, 내용 많아져도 절대 안 늘어남 */
+/* 날짜 셀 — 둥근 카드, 고정 높이 */
 .day-cell {
   background: white;
-  padding: 8px 7px 7px;
-  height: 90px;          /* min-height → height 고정 */
-  max-height: 90px;
+  border: 2.5px solid var(--pink-2);
+  border-radius: 20px;
+  padding: 12px 10px;
+  height: 128px;
   cursor: pointer;
   position: relative;
-  transition: background .2s, transform .15s;
-  overflow: hidden;       /* 넘치는 내용은 잘림 */
+  transition: all .2s var(--ease);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-.day-cell:hover { background: #fff5f9; transform: scale(1.02); z-index: 2; }
-.day-cell.empty { background: rgba(255,240,248,.5); cursor: default; }
-.day-cell.empty:hover { transform: none; }
+.day-cell:hover { border-color: var(--pink-3); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(255,179,209,.3); }
+.day-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+.day-cell.empty:hover { transform: none; box-shadow: none; }
 
 /* 오늘 */
-.day-cell.today { background: linear-gradient(135deg, #fff0f8, #ffe0f0); }
+.day-cell.today { border-color: var(--pink-4); background: linear-gradient(135deg, #fff5f9, #ffeaf4); }
 
 /* 기록 있는 날 */
-.day-cell.has-content { background: #fff8fc; }
+.day-cell.has-content { border-color: var(--pink-3); }
 
-/* 특별한 날 — 배경만 살짝 다르게, 크기에는 영향 없음 */
-.day-cell.special-day { background: linear-gradient(135deg, #fffde7, #fff9c4) !important; }
+/* 특별한 날 — 은은한 노랑 테두리 */
+.day-cell.special-day { border-color: var(--yellow-2); background: linear-gradient(135deg, #fffdf3, white); }
 
 .day-cell.sunday  .day-num { color: var(--pink-5); }
 .day-cell.saturday .day-num { color: #7baed4; }
 
 .day-num {
   font-family: 'Cute Font', sans-serif;
-  font-size: .9rem; color: var(--text);
-  display: block; margin-bottom: 2px;
-  position: relative; z-index: 4;
+  font-size: 1.05rem; color: var(--text);
+  display: block; flex-shrink: 0;
+  margin-bottom: 4px;
 }
 .day-cell.today .day-num {
-  background: var(--pink-4); color: white;
-  border-radius: 50%; width: 26px; height: 26px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .78rem;
-}
-/* 사진이 있는 셀에서는 날짜 숫자가 사진 위에 잘 보이도록 흰 배경 살짝 깔아줌 */
-.day-cell.has-content .day-num {
-  background: rgba(255,255,255,.85);
-  border-radius: 6px;
-  padding: 0 4px;
-  display: inline-block;
-}
-.day-cell.has-content.today .day-num {
-  background: var(--pink-4);
-  border-radius: 50%;
-  padding: 0;
+  color: var(--pink-5);
+  font-weight: 700;
 }
 
-/* 특별한 날 라벨 — 작은 뱃지, 우측 상단 고정 */
+/* 특별한 날 라벨 — 우상단 작은 뱃지 (이모지만) */
 .day-special-label {
   position: absolute;
-  top: 6px; right: 5px;
-  width: 18px; height: 18px;
+  top: 9px; right: 9px;
+  width: 20px; height: 20px;
   border-radius: 50%;
   background: var(--yellow-2);
   border: 1px solid #f5c542;
   display: flex; align-items: center; justify-content: center;
-  font-size: .6rem;
+  font-size: .65rem;
   z-index: 4;
   overflow: hidden;
   white-space: nowrap;
 }
 
-/* 사진 — 원래처럼 셀 전체를 크게 채우는 큰 이미지 (셀 자체 높이는 고정 유지) */
+/* 사진이 들어가는 칸 — 둥근 모서리 작은 박스, 셀 안에서 남는 공간을 채움 */
+.day-thumb-wrap {
+  flex: 1;
+  min-height: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
 .day-thumb {
-  position: absolute;
-  inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  z-index: 1;
-}
-/* 사진 위에 그라데이션 살짝 깔아서 날짜 숫자/코멘트 글자가 잘 보이게 */
-.day-cell.has-content::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,.18) 0%, transparent 35%, transparent 60%, rgba(0,0,0,.35) 100%);
-  z-index: 2;
-  pointer-events: none;
+  display: block;
+  border-radius: 14px;
 }
 
-/* 코멘트 미리보기 — 사진 위라면 하단에 흰 글씨로, 사진 없으면 기존처럼 */
+/* 코멘트만 있고 사진 없을 때 미리보기 텍스트 */
 .day-comment-preview {
   font-family: 'Cute Font', sans-serif;
-  font-size: .62rem;
-  line-height: 1.3;
-  margin-top: 2px;
-  display: -webkit-box; -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical; overflow: hidden;
-  position: relative; z-index: 3;
+  font-size: .68rem;
+  line-height: 1.35;
   color: var(--text-m);
-}
-.day-cell.has-content .day-comment-preview {
-  position: absolute;
-  bottom: 5px; left: 7px; right: 7px;
-  color: white;
-  text-shadow: 0 1px 3px rgba(0,0,0,.5);
-  margin-top: 0;
+  display: -webkit-box; -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+  flex: 1;
 }
 
+/* 기록이 있다는 표시 — 우하단 핑크 동그라미 점 */
 .day-dot {
-  position: absolute; bottom: 6px; right: 6px;
-  width: 6px; height: 6px;
-  border-radius: 50%; background: var(--pink-4);
+  position: absolute; bottom: 9px; right: 9px;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--pink-4);
+  border: 2px solid white;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
   z-index: 4;
 }
-/* 사진이 있을 땐 점 표시를 굳이 따로 안 띄움(사진 자체가 표시 역할) */
-.day-cell.has-content .day-dot { display: none; }
 
 /* ══════════════════════════════════════
    모달 공통
@@ -348,6 +325,7 @@ body {
   backdrop-filter: blur(8px);
   z-index: 100;
   display: flex; align-items: center; justify-content: center;
+  gap: 14px;
   padding: 20px;
   opacity: 0; pointer-events: none;
   transition: opacity .3s var(--ease);
@@ -358,7 +336,9 @@ body {
   box-shadow: var(--shadow-lg); position: relative;
   transform: scale(.95) translateY(12px);
   transition: transform .35s var(--spring);
-  max-height: 88vh; overflow-y: auto;
+  max-height: 88vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .modal-overlay.open .modal { transform: scale(1) translateY(0); }
 .modal-close {
@@ -372,7 +352,7 @@ body {
 .modal-close:hover { background: var(--pink-3); color: white; transform: rotate(90deg); }
 
 /* 날짜 모달 */
-.day-modal { width: min(480px,100%); padding: 32px 36px 24px; }
+.day-modal { width: min(440px,100%); padding: 32px 28px 24px; }
 .day-modal-header { margin-bottom: 20px; }
 .day-modal-date {
   font-family: 'Cute Font', sans-serif;
@@ -385,31 +365,51 @@ body {
   border-radius: 8px; padding: 3px 10px; display: inline-block;
 }
 
-/* 날짜 모달 좌우 이동 버튼 — 모달 테두리 바로 바깥쪽에 살짝 겹치게 배치 */
+/* 날짜 모달 좌우 이동 버튼 — modal-overlay의 flex 형제로, 모달 옆에 온전히 보임 */
 .day-modal-nav {
-  position: absolute;
-  top: 50%; transform: translateY(-50%);
-  width: 38px; height: 38px;
+  flex-shrink: 0;
+  width: 42px; height: 42px;
   border-radius: 50%;
   background: white;
   border: 2px solid var(--pink-3);
   color: var(--pink-5);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   box-shadow: var(--shadow);
   transition: all .2s var(--spring);
-  z-index: 20;
+  opacity: 0;
+  transform: scale(.8);
 }
-.day-modal-nav:hover { background: var(--pink-4); color: white; transform: translateY(-50%) scale(1.1); }
-.day-modal-prev { left: -19px; }
-.day-modal-next { right: -19px; }
+.modal-overlay.open .day-modal-nav { opacity: 1; transform: scale(1); }
+.day-modal-nav:hover { background: var(--pink-4); color: white; transform: scale(1.1); }
+.day-modal-nav:disabled { opacity: .25 !important; cursor: not-allowed; }
 
-/* 모바일: 화면 폭이 좁으면 모달 안쪽으로 들어와서 내용과 안 겹치게 */
-@media (max-width: 600px) {
-  .day-modal-nav { width: 32px; height: 32px; font-size: 1.2rem; }
-  .day-modal-prev { left: 4px; }
-  .day-modal-next { right: 4px; }
+/* 화면이 좁아지면(모달+버튼이 다 안 들어가면) 바깥쪽 버튼은 숨김 */
+@media (max-width: 560px) {
+  .modal-overlay { gap: 0; }
+  .day-modal-nav { display: none; }
+}
+
+/* 모바일 전용 좌우 버튼 — 모달 헤더 안에, 작게 */
+.day-modal-nav-mobile { display: none; }
+@media (max-width: 560px) {
+  .day-modal-header { position: relative; padding: 0 36px; }
+  .day-modal-nav-mobile {
+    display: flex;
+    position: absolute; top: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--pink-1);
+    border: 1.5px solid var(--pink-3);
+    color: var(--pink-5);
+    font-size: 1.1rem;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .day-modal-nav-mobile:disabled { opacity: .3; cursor: not-allowed; }
+  .day-modal-nav-mobile.prev { left: 0; }
+  .day-modal-nav-mobile.next { right: 0; }
 }
 
 .day-photos {
@@ -589,7 +589,19 @@ body {
   .char-img { width: 90px; }
 }
 @media (max-width: 640px) {
-  .day-cell { min-height: 68px; }
+  .day-cell { height: 92px; padding: 8px 6px; border-radius: 14px; }
+  .day-num { font-size: .85rem; margin-bottom: 2px; }
+  .day-thumb-wrap { border-radius: 10px; }
+  .day-thumb { border-radius: 10px; }
+  .day-special-label { width: 16px; height: 16px; font-size: .55rem; top: 6px; right: 6px; }
+  .day-dot { width: 8px; height: 8px; bottom: 6px; right: 6px; }
+  .day-comment-preview { font-size: .58rem; -webkit-line-clamp: 2; }
+  .calendar-grid { gap: 6px; }
+  .calendar-header { gap: 6px; }
+  .calendar-header span { font-size: .75rem; padding: 4px 0; border-radius: 8px; }
   .calendar-wrap { padding: 0 10px 100px; }
   .header-title { font-size: 1.6rem; }
+}
+@media (max-width: 400px) {
+  .day-cell { height: 80px; }
 }
